@@ -1,65 +1,75 @@
-import Image from "next/image";
+"use client";
+
+import { useI18n } from "@/components/i18n-provider";
+import { useSalonStore } from "@/store/salon";
+import { Calendar, ChevronRight, Sparkles, Scissors, Smile } from "lucide-react";
+import Link from "next/link";
+
+const icons = [
+  <Scissors className="w-6 h-6 text-primary" key="scissors" />,
+  <Sparkles className="w-6 h-6 text-primary" key="sparkles" />,
+  <Smile className="w-6 h-6 text-primary" key="smile" />,
+];
 
 export default function Home() {
+  const { t } = useI18n();
+  const { services } = useSalonStore();
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="flex-1 w-full bg-background transition-colors duration-300">
+      {/* Hero Section */}
+      <section className="relative w-full h-[450px] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-primary/20 rounded-full blur-[80px] -z-10" />
+
+        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground mb-4 drop-shadow-sm">
+          {t("home.title")}
+        </h1>
+        <p className="text-lg md:text-xl text-foreground/80 max-w-lg mb-8">
+          {t("home.subtitle")}
+        </p>
+        <Link href="/book" className="flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold shadow-lg hover:shadow-primary/50 hover:-translate-y-1 transition-all duration-300">
+          <Calendar size={20} />
+          {t("home.bookNow")}
+        </Link>
+      </section>
+
+      {/* Services Section */}
+      <section className="max-w-5xl mx-auto px-4 py-12 md:py-20">
+        <h2 className="text-3xl font-extrabold text-foreground mb-8 flex items-center gap-3">
+          <Sparkles className="text-primary w-8 h-8" />
+          {t("home.services")}
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {services.map((service, i) => (
+            <Link
+              key={service.id}
+              href={`/book?service=${service.id}`}
+              className="bg-card border border-border rounded-3xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col justify-between group"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              <div>
+                <div className="w-14 h-14 bg-secondary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary transition-all duration-300">
+                  <div className="group-hover:text-primary-foreground transition-colors duration-300">
+                    {icons[i % icons.length]}
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-1">{service.name}</h3>
+                <p className="text-foreground/60 font-medium text-sm">{service.duration}</p>
+              </div>
+
+              <div className="mt-8 flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-xl font-black text-primary">${service.priceUSD}</span>
+                  <span className="text-sm font-bold text-foreground/50">{service.priceHTG.toLocaleString()} HTG</span>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-colors shadow-sm">
+                  <ChevronRight size={20} />
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </section>
     </div>
   );
 }
