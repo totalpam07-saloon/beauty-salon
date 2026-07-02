@@ -131,7 +131,7 @@ export default async function TenantLayout(props: {
     clientPhone: a.client_phone || "",
     clientEmail: a.client_email || "",
     serviceId: a.service_id,
-    serviceName: formattedServices.find(s => s.id === a.service_id)?.name || "Service",
+    serviceName: formattedServices.find((s: any) => s.id === a.service_id)?.name || "Service",
     date: a.date,
     time: a.time,
     status: a.status,
