@@ -4,12 +4,12 @@ import { createClient } from "@/lib/supabase/server";
  * Get tenant ID by subdomain — direct query, no RPC.
  * This is the single source of truth for tenant lookup.
  */
-export async function getTenantIdByDomain(subdomain: string) {
+export async function getTenantIdByDomain(domainQuery: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("tenants")
     .select("id")
-    .eq("subdomain", subdomain)
+    .or(`subdomain.eq.${domainQuery},domain.eq.${domainQuery}`)
     .single();
   if (error || !data) return null;
   return data.id as string;

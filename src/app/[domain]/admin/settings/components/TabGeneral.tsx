@@ -18,6 +18,7 @@ export function TabGeneral({
   setCustomDomain: (v: string) => void;
   savingDomain: boolean;
   handleSaveDomain: () => void;
+  domainStatus?: any;
 }) {
   const { t } = useI18n();
   const inputClass = "w-full bg-background border-2 border-border rounded-2xl px-4 py-4 outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all font-medium text-foreground";
@@ -70,6 +71,51 @@ export function TabGeneral({
             </button>
           </div>
           <p className="text-xs text-foreground/50 ml-1">Connectez votre propre nom de domaine. (Ex: www.koulakay.com)</p>
+          
+          {domainStatus && (
+            <div className={`mt-4 p-4 rounded-xl border ${domainStatus.verified ? 'bg-green-500/10 border-green-500/50' : 'bg-yellow-500/10 border-yellow-500/50'}`}>
+              <div className="flex items-center gap-2 mb-2">
+                <div className={`w-2 h-2 rounded-full ${domainStatus.verified ? 'bg-green-500' : 'bg-yellow-500 animate-pulse'}`} />
+                <span className="font-bold text-sm">
+                  {domainStatus.verified ? "Domaine Connecté et Sécurisé" : "Configuration DNS Requise"}
+                </span>
+              </div>
+              
+              {!domainStatus.verified && (
+                <div className="text-sm text-foreground/80 space-y-3 mt-3">
+                  <p>Pour finaliser la connexion, ajoutez cet enregistrement DNS chez votre registraire (GoDaddy, Hostinger, etc.) :</p>
+                  
+                  {customDomain.startsWith('www.') || customDomain.split('.').length > 2 ? (
+                    <div className="bg-background border border-border p-3 rounded-lg font-mono text-xs">
+                      <div className="grid grid-cols-3 gap-2">
+                        <span className="text-foreground/50">Type</span>
+                        <span className="text-foreground/50">Nom / Host</span>
+                        <span className="text-foreground/50">Valeur / Cible</span>
+                        
+                        <span className="font-bold">CNAME</span>
+                        <span className="font-bold">{customDomain.split('.')[0]}</span>
+                        <span className="font-bold">cname.vercel-dns.com</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-background border border-border p-3 rounded-lg font-mono text-xs">
+                      <div className="grid grid-cols-3 gap-2">
+                        <span className="text-foreground/50">Type</span>
+                        <span className="text-foreground/50">Nom / Host</span>
+                        <span className="text-foreground/50">Valeur / Cible</span>
+                        
+                        <span className="font-bold">A Record</span>
+                        <span className="font-bold">@</span>
+                        <span className="font-bold">76.76.21.21</span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <p className="text-xs opacity-70">Note: La propagation DNS peut prendre jusqu'à 24 heures, mais cela prend généralement moins de 10 minutes. Cliquez sur Enregistrer pour vérifier le statut à nouveau.</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Logo */}

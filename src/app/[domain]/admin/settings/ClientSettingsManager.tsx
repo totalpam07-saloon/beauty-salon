@@ -35,17 +35,55 @@ export default function ClientSettingsManager({ tenantId, domain, settings, cust
 
   useEffect(() => { setForm(settings); }, [settings]);
 
+  const [domainStatus, setDomainStatus] = useState<any>(null);
+
+  // Fetch initial domain status if a custom domain exists
+  useEffect(() => {
+    if (customDomainServer) {
+      fetch(`/api/domains?domain=${customDomainServer}`)
+        .then(res => res.json())
+        .then(data => {
+          if (!data.error) setDomainStatus(data);
+        });
+    }
+  }, [customDomainServer]);
+
   const handleSaveDomain = () => {
     if (!tenantId) return;
     setSavingDomain(true);
+    setDomainStatus(null);
     let cleanDomain = customDomain.replace(/^https?:\/\//, '').replace(/\/$/, '');
-    if (!cleanDomain) cleanDomain = null as any;
+    
+    // Check if it's the root domain or empty
+    if (!cleanDomain || cleanDomain.includes("koulakay.com") || cleanDomain.includes("crochetri.store") || cleanDomain.includes("localhost")) {
+      cleanDomain = null as any;
+    }
+
     startTransition(async () => {
       try {
+        // 1. Save to database
         await updateTenantDomainAction(tenantId, domain, cleanDomain);
-        addToast("Domaine sauvegardé avec succès", "success");
-      } catch {
-        addToast("Erreur", "error");
+        
+        if (cleanDomain) {
+          // 2. Add to Vercel Project
+          await fetch("/api/domains", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ domain: cleanDomain })
+          });
+
+          // 3. Fetch Verification Status
+          const statusRes = await fetch(`/api/domains?domain=${cleanDomain}`);
+          if (statusRes.ok) {
+            const statusData = await statusRes.json();
+            setDomainStatus(statusData);
+          }
+        }
+        
+        addToast("Domaine mis à jour", "success");
+      } catch (e) {
+        console.error(e);
+        addToast("Erreur lors de la sauvegarde", "error");
       }
       setSavingDomain(false);
     });
@@ -117,6 +155,7 @@ export default function ClientSettingsManager({ tenantId, domain, settings, cust
               setCustomDomain={setCustomDomain}
               savingDomain={savingDomain}
               handleSaveDomain={handleSaveDomain}
+              domainStatus={domainStatus}
             />
           )}
           {activeTab === "appearance" && <TabAppearance form={form} setForm={setForm} />}
