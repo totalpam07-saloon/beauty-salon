@@ -110,7 +110,7 @@ export default async function TenantLayout(props: {
     whatsappVisibility: settings.whatsapp_visibility || "floating",
   } : null;
 
-  const formattedServices = (services || []).map(s => ({
+  const formattedServices = (services || []).map((s: any) => ({
     id: s.id,
     name: s.name,
     priceUSD: s.price_usd,
@@ -125,7 +125,7 @@ export default async function TenantLayout(props: {
     description: s.description || ""
   }));
 
-  const formattedAppointments = (appointments || []).map(a => ({
+  const formattedAppointments = (appointments || []).map((a: any) => ({
     id: a.id,
     clientName: a.client_name,
     clientPhone: a.client_phone || "",
@@ -141,7 +141,7 @@ export default async function TenantLayout(props: {
     createdAt: a.created_at,
   }));
 
-  const formattedPortfolio = (portfolio || []).map(p => ({
+  const formattedPortfolio = (portfolio || []).map((p: any) => ({
     id: p.id,
     imageUrl: p.image_url,
     category: p.category || "",
