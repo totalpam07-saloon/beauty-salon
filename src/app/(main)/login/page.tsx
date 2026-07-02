@@ -32,19 +32,7 @@ export default function LoginPage() {
       const isLocal = window.location.hostname === "localhost" || window.location.hostname.includes("127.0.0.1");
       const scheme = isLocal ? "http" : "https";
 
-      // 2. Check if superadmin
-      const { data: superadmin } = await supabase
-        .from("superadmins")
-        .select("id")
-        .eq("user_id", userId)
-        .single();
-
-      if (superadmin) {
-        window.location.href = "/superadmin";
-        return;
-      }
-
-      // 3. Check if salon owner
+      // 2. Check if salon owner first
       const { data: tenant } = await supabase
         .from("tenants")
         .select("subdomain")
@@ -67,6 +55,18 @@ export default function LoginPage() {
         } else {
           window.location.href = `https://${tenant.subdomain}.${rootDomain}/admin`;
         }
+        return;
+      }
+
+      // 3. Check if superadmin
+      const { data: superadmin } = await supabase
+        .from("superadmins")
+        .select("id")
+        .eq("user_id", userId)
+        .single();
+
+      if (superadmin) {
+        window.location.href = "/superadmin";
         return;
       }
 
