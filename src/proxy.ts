@@ -20,8 +20,9 @@ export default async function middleware(req: NextRequest) {
   const path = url.pathname;
 
   // ─── 1. Determine the root domain ───────────────────────────────────────
-  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || "localhost:3000";
-  const host = req.headers.get("host") ?? "";
+  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || "crochetri.store";
+  const rawHost = req.headers.get("host") ?? "";
+  const host = rawHost.replace(/^www\./, ""); // Strip www. so www.crochetri.store == crochetri.store
 
   // ─── 2. Refresh the Supabase session cookie ─────────────────────────────
   const { supabaseResponse, user, supabase } = await updateSession(req, NextResponse.next());
