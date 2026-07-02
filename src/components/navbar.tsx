@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "./i18n-provider";
-import { useSalonStore } from "@/store/salon";
+import { SalonSettings } from "@/store/salon";
 import { Globe, Bell, User as UserIcon, ChevronDown, UserCircle, LogOut, LayoutDashboard, Calendar, AlertTriangle } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
@@ -9,9 +9,14 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { User } from "@supabase/supabase-js";
 
-export function Navbar() {
+interface NavbarProps {
+  settings?: SalonSettings | null;
+  pendingAppointmentsCount?: number;
+  planExpiresAt?: string | null;
+}
+
+export function Navbar({ settings, pendingAppointmentsCount = 0, planExpiresAt }: NavbarProps) {
   const { language, setLanguage, t } = useI18n();
-  const { settings, appointments, planExpiresAt } = useSalonStore();
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -40,7 +45,6 @@ export function Navbar() {
   const notifications = [];
   
   // 1. Pending Appointments
-  const pendingAppointmentsCount = appointments?.filter(a => a.status === "pending").length || 0;
   if (pendingAppointmentsCount > 0) {
     notifications.push({
       id: "pending_appointments",
@@ -85,14 +89,14 @@ export function Navbar() {
   return (
     <nav className="w-full flex items-center justify-between p-4 bg-card border-b border-border shadow-sm">
       <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-        {(settings.headerDisplay === "logo" || settings.headerDisplay === "both" || !settings.headerDisplay) && settings.logoUrl ? (
+        {(settings?.headerDisplay === "logo" || settings?.headerDisplay === "both" || !settings?.headerDisplay) && settings?.logoUrl ? (
           <div className="relative h-10 sm:h-12 w-32">
-            <Image src={settings.logoUrl} alt={settings.salonName} fill sizes="128px" className="object-contain object-left" />
+            <Image src={settings.logoUrl} alt={settings.salonName || "Logo"} fill sizes="128px" className="object-contain object-left" />
           </div>
         ) : null}
-        {(settings.headerDisplay === "name" || settings.headerDisplay === "both" || !settings.headerDisplay) && (
+        {(settings?.headerDisplay === "name" || settings?.headerDisplay === "both" || !settings?.headerDisplay) && (
           <span className="font-bold text-xl sm:text-2xl text-primary tracking-tight line-clamp-1">
-            {settings.salonName || "KouLakay Salon"}
+            {settings?.salonName || "KouLakay Salon"}
           </span>
         )}
       </Link>

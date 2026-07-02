@@ -1,11 +1,11 @@
 "use client";
 
-import { useSalonStore } from "@/store/salon";
 import { Camera, Globe, Play, MessageCircle, MapPin } from "lucide-react";
-import Link from "next/link";
+import { SalonSettings } from "@/store/salon";
+import { useI18n } from "./i18n-provider";
 
-export function Footer() {
-  const { settings } = useSalonStore();
+export function Footer({ settings }: { settings?: SalonSettings | null }) {
+  const { t } = useI18n();
 
   if (!settings) return null;
 

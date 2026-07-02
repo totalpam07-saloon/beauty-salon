@@ -195,9 +195,6 @@ export default async function TenantLayout(props: {
       tenantId={tenantId}
       planExpiresAt={tenantRecord?.plan_expires_at || null}
       settings={formattedSettings}
-      services={formattedServices}
-      appointments={formattedAppointments}
-      portfolio={formattedPortfolio}
     >
       <div {...themeProps} className="min-h-screen bg-background text-foreground transition-colors">
         {isCustomTheme && (
@@ -215,11 +212,15 @@ export default async function TenantLayout(props: {
           `}} />
         )}
         <div className="flex-1 flex flex-col min-h-screen">
-          <Navbar />
+          <Navbar 
+            settings={formattedSettings} 
+            pendingAppointmentsCount={formattedAppointments?.filter((a: any) => a.status === "pending").length || 0}
+            planExpiresAt={tenantRecord?.plan_expires_at || null}
+          />
           <main className="flex-1 flex flex-col">
             {props.children}
           </main>
-          <Footer />
+          <Footer settings={formattedSettings} />
         </div>
         {formattedSettings?.whatsappVisibility === "floating" && formattedSettings?.whatsappNumber && (
           <a href={`https://wa.me/${formattedSettings.whatsappNumber.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" 

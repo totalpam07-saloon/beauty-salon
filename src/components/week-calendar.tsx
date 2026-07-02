@@ -17,7 +17,7 @@ import {
 interface WeekCalendarProps {
   serviceDuration: string;      // e.g. "2h"
   settings: SalonSettings;
-  appointments: Appointment[];
+  appointments: Partial<Appointment>[];
   services: Service[];
   selectedDate: string;
   selectedTime: string;

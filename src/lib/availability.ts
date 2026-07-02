@@ -68,7 +68,7 @@ export function getSlots(
  */
 export function getBlockedSlots(
   dateStr: string,
-  appointments: Appointment[],
+  appointments: Partial<Appointment>[],
   services: Service[],
   bufferMinutes: number
 ): Set<string> {
@@ -79,6 +79,7 @@ export function getBlockedSlots(
   );
 
   for (const appt of dayAppts) {
+    if (!appt.time || !appt.serviceId) continue;
     const svc = services.find((s) => s.id === appt.serviceId);
     const durMins = svc ? parseDurationMinutes(svc.duration) : 60;
     const startMins = timeToMinutes(appt.time);

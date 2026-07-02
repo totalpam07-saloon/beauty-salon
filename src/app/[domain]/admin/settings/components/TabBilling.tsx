@@ -3,32 +3,35 @@
 import { useI18n } from "@/components/i18n-provider";
 import { CheckCircle2, Lock, ExternalLink, AlertTriangle, Upload, X } from "lucide-react";
 import { useSalonStore } from "@/store/salon";
-import { useEffect, useState } from "react";
-import { uploadImage } from "@/lib/supabase/storage";
+import { submitTenantPaymentAction } from "@/app/actions";
+import { useState, useTransition } from "react";
 import { ImageInput } from "@/components/image-input";
 
-export function TabBilling() {
+export function TabBilling({ tenantId, domain, tenantPayments }: { tenantId: string, domain: string, tenantPayments: any[] }) {
   const { t } = useI18n();
-  const { planExpiresAt, tenantPayments, fetchTenantPayments, submitTenantPayment, addToast } = useSalonStore();
+  const { planExpiresAt, addToast } = useSalonStore();
   const [submitting, setSubmitting] = useState(false);
+  const [isPending, startTransition] = useTransition();
   
   const [receiptUrl, setReceiptUrl] = useState("");
   const [currency, setCurrency] = useState<"USD" | "HTG">("USD");
 
-  useEffect(() => {
-    fetchTenantPayments();
-  }, []);
-
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!receiptUrl) {
       addToast("Veuillez télécharger un reçu.", "error");
       return;
     }
     setSubmitting(true);
-    await submitTenantPayment(currency === "USD" ? 20 : 2750, currency, receiptUrl);
-    setReceiptUrl("");
-    addToast("Paiement soumis avec succès. En attente d'approbation.", "success");
-    setSubmitting(false);
+    startTransition(async () => {
+      try {
+        await submitTenantPaymentAction(tenantId, domain, currency === "USD" ? 20 : 2750, currency, receiptUrl);
+        setReceiptUrl("");
+        addToast("Paiement soumis avec succès. En attente d'approbation.", "success");
+      } catch {
+        addToast("Erreur lors de la soumission.", "error");
+      }
+      setSubmitting(false);
+    });
   };
 
   const now = new Date();
@@ -124,16 +127,11 @@ export function TabBilling() {
             <ImageInput 
               value={receiptUrl}
               onChange={setReceiptUrl}
-              bucket="receipts" // Reusing the same receipts bucket as clients
-              placeholder="Télécharger le reçu de paiement"
             />
 
-            <button 
-              onClick={handleSubmit}
-              disabled={submitting || !receiptUrl}
-              className="mt-4 w-full bg-primary text-white py-3 rounded-2xl font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
-            >
-              {submitting ? "Envoi en cours..." : "Soumettre le paiement"}
+            <button disabled={!receiptUrl || submitting || isPending} onClick={handleSubmit}
+                className="w-full flex justify-center items-center gap-2 bg-primary text-primary-foreground py-4 rounded-2xl font-extrabold hover:opacity-90 disabled:opacity-50 transition-opacity">
+                {submitting || isPending ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "Soumettre le Paiement"}
             </button>
           </div>
         </div>

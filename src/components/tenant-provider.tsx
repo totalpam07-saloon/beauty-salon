@@ -1,19 +1,16 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useSalonStore, SalonSettings, Service, Appointment, PortfolioPhoto, defaultWorkingHours } from "@/store/salon";
+import { useSalonStore, SalonSettings, defaultWorkingHours } from "@/store/salon";
 
 interface TenantProviderProps {
   tenantId: string;
   planExpiresAt: string | null;
   settings: SalonSettings | null;
-  services: Service[];
-  appointments: Appointment[];
-  portfolio: PortfolioPhoto[];
   children: React.ReactNode;
 }
 
-export function TenantProvider({ tenantId, planExpiresAt, settings, services, appointments, portfolio, children }: TenantProviderProps) {
+export function TenantProvider({ tenantId, planExpiresAt, settings, children }: TenantProviderProps) {
   const initialized = useRef(false);
 
   // Default settings if null
@@ -36,9 +33,6 @@ export function TenantProvider({ tenantId, planExpiresAt, settings, services, ap
       tenantId,
       planExpiresAt,
       settings: safeSettings,
-      services,
-      appointments,
-      portfolio,
     });
     initialized.current = true;
   }
@@ -47,12 +41,10 @@ export function TenantProvider({ tenantId, planExpiresAt, settings, services, ap
   useEffect(() => {
     useSalonStore.getState().setStoreData({
       tenantId,
+      planExpiresAt,
       settings: safeSettings,
-      services,
-      appointments,
-      portfolio,
     });
-  }, [tenantId, safeSettings, services, appointments, portfolio]);
+  }, [tenantId, planExpiresAt, safeSettings]);
 
   return <>{children}</>;
 }

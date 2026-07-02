@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { LayoutDashboard, Scissors, Settings, Images, Calendar, Users } from "lucide-react";
 import { useI18n } from "@/components/i18n-provider";
 import { AdminBanner } from "@/components/AdminBanner";
+import { createClient } from "@/lib/supabase/client";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
