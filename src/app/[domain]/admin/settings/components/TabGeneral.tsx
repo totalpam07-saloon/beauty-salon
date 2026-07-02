@@ -11,6 +11,7 @@ export function TabGeneral({
   setCustomDomain,
   savingDomain,
   handleSaveDomain,
+  domainStatus,
 }: {
   form: SalonSettings;
   setForm: (v: any) => void;
@@ -111,7 +112,27 @@ export function TabGeneral({
                     </div>
                   )}
                   
-                  <p className="text-xs opacity-70">Note: La propagation DNS peut prendre jusqu'à 24 heures, mais cela prend généralement moins de 10 minutes. Cliquez sur Enregistrer pour vérifier le statut à nouveau.</p>
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50">
+                    <p className="text-[11px] opacity-70 max-w-[70%]">Note: La propagation DNS peut prendre jusqu'à 24 heures, mais cela prend généralement moins de 10 minutes.</p>
+                    
+                    <button 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleSaveDomain();
+                      }}
+                      disabled={savingDomain}
+                      className="bg-primary/10 text-primary hover:bg-primary/20 font-bold text-xs px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+                    >
+                      {savingDomain ? (
+                        "Vérification..."
+                      ) : (
+                        <>
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                          Vérifier le statut
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
