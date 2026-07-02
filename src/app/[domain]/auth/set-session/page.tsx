@@ -24,7 +24,7 @@ function SetSessionContent() {
         if (error) {
           window.location.href = "/login";
         } else {
-          // Session is now set on this subdomain – go to the dashboard
+          // Session is now set on this subdomain – go to the admin dashboard
           window.location.href = "/admin";
         }
       });

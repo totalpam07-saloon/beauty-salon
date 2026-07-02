@@ -16,19 +16,7 @@ export default function SaaSLandingPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Check superadmin first
-      const { data: superadmin } = await supabase
-        .from("superadmins")
-        .select("id")
-        .eq("user_id", user.id)
-        .single();
-
-      if (superadmin) {
-        window.location.href = "/superadmin";
-        return;
-      }
-
-      // Check salon owner
+      // Check salon owner first (same logic as login page)
       const { data: tenant } = await supabase
         .from("tenants")
         .select("subdomain")
@@ -44,6 +32,19 @@ export default function SaaSLandingPage() {
           const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || "localhost:3000";
           window.location.href = `https://${tenant.subdomain}.${rootDomain}/admin`;
         }
+        return;
+      }
+
+      // If no salon, check superadmin
+      const { data: superadmin } = await supabase
+        .from("superadmins")
+        .select("id")
+        .eq("user_id", user.id)
+        .single();
+
+      if (superadmin) {
+        window.location.href = "/superadmin";
+        return;
       }
     };
     checkAuth();

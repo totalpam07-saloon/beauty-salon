@@ -149,6 +149,7 @@ export default function ClientPortfolioManager({ tenantId, domain, portfolio, se
           {portfolio.map((photo) => (
             <div key={photo.id} className="break-inside-avoid rounded-2xl overflow-hidden relative group shadow-sm">
               <Image 
+                unoptimized
                 src={photo.imageUrl} 
                 alt={photo.caption || photo.category} 
                 width={0} 

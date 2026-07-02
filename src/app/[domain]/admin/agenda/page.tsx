@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getTenantIdByDomain, getCachedTenantData } from "@/lib/supabase/tenant-data";
+import { getTenantIdByDomain, getTenantData } from "@/lib/supabase/tenant-data";
 import ClientAgenda from "./ClientAgenda";
 
 export default async function AgendaPage(props: { params: Promise<{ domain: string }> }) {
@@ -10,12 +10,27 @@ export default async function AgendaPage(props: { params: Promise<{ domain: stri
   const tenantId = await getTenantIdByDomain(domain);
   if (!tenantId) notFound();
 
-  const fetcher = getCachedTenantData(domain);
-  const data = await fetcher(tenantId);
+  const data = await getTenantData(tenantId);
   
   if (!data) notFound();
 
-  const appointments = data.appointments || [];
+  const rawAppointments = data.appointments || [];
+
+  const appointments = rawAppointments.map((a: any) => ({
+    id: a.id,
+    clientName: a.client_name,
+    clientPhone: a.client_phone,
+    clientEmail: a.client_email,
+    serviceId: a.service_id,
+    serviceName: a.service_name || "",
+    date: a.date,
+    time: a.time,
+    status: a.status,
+    screenshotName: a.deposit_receipt_url,
+    paymentMethod: a.payment_method || "",
+    amountPaid: a.amount_paid || "",
+    createdAt: a.created_at
+  }));
 
   return (
     <ClientAgenda 

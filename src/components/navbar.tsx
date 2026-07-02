@@ -91,7 +91,7 @@ export function Navbar({ settings, pendingAppointmentsCount = 0, planExpiresAt }
       <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
         {(settings?.headerDisplay === "logo" || settings?.headerDisplay === "both" || !settings?.headerDisplay) && settings?.logoUrl ? (
           <div className="relative h-10 sm:h-12 w-32">
-            <Image src={settings.logoUrl} alt={settings.salonName || "Logo"} fill sizes="128px" className="object-contain object-left" />
+            <Image unoptimized src={settings.logoUrl} alt={settings.salonName || "Logo"} fill sizes="128px" className="object-contain object-left" />
           </div>
         ) : null}
         {(settings?.headerDisplay === "name" || settings?.headerDisplay === "both" || !settings?.headerDisplay) && (

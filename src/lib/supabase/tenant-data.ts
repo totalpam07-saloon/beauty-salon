@@ -1,29 +1,40 @@
-import { unstable_cache } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
-export async function getTenantIdByDomain(domain: string) {
+/**
+ * Get tenant ID by subdomain — direct query, no RPC.
+ * This is the single source of truth for tenant lookup.
+ */
+export async function getTenantIdByDomain(subdomain: string) {
   const supabase = await createClient();
-  const { data: tenant } = await supabase.rpc("get_tenant_id_by_domain", { req_domain: domain });
-  return tenant;
+  const { data, error } = await supabase
+    .from("tenants")
+    .select("id")
+    .eq("subdomain", subdomain)
+    .single();
+  if (error || !data) return null;
+  return data.id as string;
 }
 
-export function getCachedTenantData(domain: string) {
-  return unstable_cache(
-    async (id: string) => {
-      const supabase = await createClient();
-      const { data } = await supabase
-        .from("tenants")
-        .select(`
-          salon_settings (*),
-          services (*),
-          appointments (*),
-          portfolio (*)
-        `)
-        .eq("id", id)
-        .single();
-      return data;
-    },
-    [`tenant-data-${domain}`],
-    { revalidate: 60, tags: [`tenant-${domain}`] }
-  );
+/**
+ * Fetch all tenant data needed to render a salon page.
+ */
+export async function getTenantData(id: string) {
+  const supabase = await createClient();
+  
+  // Fetch tenant info
+  const { data: tenant } = await supabase.from("tenants").select("*").eq("id", id).single();
+  
+  // Fetch related tables separately to guarantee they return data and avoid PostgREST join bugs
+  const { data: settings } = await supabase.from("salon_settings").select("*").eq("tenant_id", id);
+  const { data: services } = await supabase.from("services").select("*").eq("tenant_id", id);
+  const { data: appointments } = await supabase.from("appointments").select("*").eq("tenant_id", id);
+  const { data: portfolio } = await supabase.from("portfolio").select("*").eq("tenant_id", id);
+
+  return {
+    ...tenant,
+    salon_settings: settings || [],
+    services: services || [],
+    appointments: appointments || [],
+    portfolio: portfolio || []
+  };
 }

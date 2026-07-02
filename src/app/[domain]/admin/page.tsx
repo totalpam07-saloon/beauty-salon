@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getTenantIdByDomain, getCachedTenantData } from "@/lib/supabase/tenant-data";
+import { getTenantIdByDomain, getTenantData } from "@/lib/supabase/tenant-data";
 import ClientAdminDashboard from "./ClientAdminDashboard";
 
 export default async function AdminDashboardPage(props: { params: Promise<{ domain: string }> }) {
@@ -10,8 +10,7 @@ export default async function AdminDashboardPage(props: { params: Promise<{ doma
   const tenantId = await getTenantIdByDomain(domain);
   if (!tenantId) notFound();
 
-  const fetcher = getCachedTenantData(domain);
-  const data = await fetcher(tenantId);
+  const data = await getTenantData(tenantId);
   
   if (!data) notFound();
 

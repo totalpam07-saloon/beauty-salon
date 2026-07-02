@@ -17,7 +17,16 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "placehold.co",
       },
+      {
+        protocol: "https",
+        hostname: "ui-avatars.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
     ],
+    unoptimized: true, // Allow images from ANY external URL pasted by salon owners
   },
 };
 

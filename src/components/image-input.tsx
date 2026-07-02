@@ -118,7 +118,7 @@ export function ImageInput({ value, onChange, label, hint }: ImageInputProps) {
       {/* Preview */}
       {preview ? (
         <div className="relative rounded-2xl overflow-hidden border border-border shadow-sm h-40">
-          <Image src={preview} alt="Aperçu" fill sizes="(max-width: 640px) 100vw, 400px" className="object-cover" />
+          <Image unoptimized src={preview} alt="Aperçu" fill sizes="(max-width: 640px) 100vw, 400px" className="object-cover" />
           <button type="button" onClick={clear}
             className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1.5 hover:bg-black/80 transition-colors">
             <X size={14} />

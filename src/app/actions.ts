@@ -1,7 +1,6 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { revalidateTag } from "next/cache";
 
 // Helper to verify auth and ownership
 async function verifyAuth(tenantId: string) {
@@ -56,8 +55,6 @@ export async function updateSettingsAction(tenantId: string, domain: string, new
     address: newSettings.address,
     whatsapp_visibility: newSettings.whatsappVisibility,
   }).eq("tenant_id", tenantId);
-
-  revalidateTag(`tenant-${domain}`, {});
 }
 
 export async function addServiceAction(tenantId: string, domain: string, service: any) {
@@ -77,8 +74,6 @@ export async function addServiceAction(tenantId: string, domain: string, service
     category: service.category,
     description: service.description
   });
-
-  revalidateTag(`tenant-${domain}`, {});
 }
 
 export async function updateServiceAction(tenantId: string, domain: string, id: string, updated: any) {
@@ -100,14 +95,11 @@ export async function updateServiceAction(tenantId: string, domain: string, id: 
   if (Object.keys(dbUpdate).length > 0) {
     await supabase.from("services").update(dbUpdate).eq("id", id).eq("tenant_id", tenantId);
   }
-
-  revalidateTag(`tenant-${domain}`, {});
 }
 
 export async function deleteServiceAction(tenantId: string, domain: string, id: string) {
   const supabase = await verifyAuth(tenantId);
   await supabase.from("services").delete().eq("id", id).eq("tenant_id", tenantId);
-  revalidateTag(`tenant-${domain}`, {});
 }
 
 export async function addPortfolioPhotoAction(tenantId: string, domain: string, photo: any) {
@@ -119,7 +111,6 @@ export async function addPortfolioPhotoAction(tenantId: string, domain: string, 
     caption: photo.caption,
     ig_link: photo.instagramUrl
   });
-  revalidateTag(`tenant-${domain}`, {});
 }
 
 export async function updatePortfolioPhotoAction(tenantId: string, domain: string, id: string, updates: any) {
@@ -134,19 +125,16 @@ export async function updatePortfolioPhotoAction(tenantId: string, domain: strin
   if (Object.keys(dbUpdate).length > 0) {
     await supabase.from("portfolio").update(dbUpdate).eq("id", id).eq("tenant_id", tenantId);
   }
-  revalidateTag(`tenant-${domain}`, {});
 }
 
 export async function deletePortfolioPhotoAction(tenantId: string, domain: string, id: string) {
   const supabase = await verifyAuth(tenantId);
   await supabase.from("portfolio").delete().eq("id", id).eq("tenant_id", tenantId);
-  revalidateTag(`tenant-${domain}`, {});
 }
 
 export async function updateAppointmentStatusAction(tenantId: string, domain: string, id: string, status: string) {
   const supabase = await verifyAuth(tenantId);
   await supabase.from("appointments").update({ status }).eq("id", id).eq("tenant_id", tenantId);
-  revalidateTag(`tenant-${domain}`, {});
 }
 
 // Public action - anyone can book an appointment
@@ -164,8 +152,6 @@ export async function addAppointmentAction(tenantId: string, domain: string, app
     deposit_receipt_url: appointment.screenshotName,
     status: appointment.status,
   });
-
-  revalidateTag(`tenant-${domain}`, {});
 }
 
 export async function submitTenantPaymentAction(tenantId: string, domain: string, amount: number, currency: string, receiptUrl: string) {
@@ -177,11 +163,9 @@ export async function submitTenantPaymentAction(tenantId: string, domain: string
     receipt_url: receiptUrl,
     status: "pending"
   });
-  revalidateTag(`tenant-${domain}`, {});
 }
 
 export async function updateTenantDomainAction(tenantId: string, domain: string, newDomain: string | null) {
   const supabase = await verifyAuth(tenantId);
   await supabase.from("tenants").update({ domain: newDomain }).eq("id", tenantId);
-  revalidateTag(`tenant-${domain}`, {});
 }

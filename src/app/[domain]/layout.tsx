@@ -3,34 +3,28 @@ import { Footer } from "@/components/footer";
 import { TenantProvider } from "@/components/tenant-provider";
 import { Toasts } from "@/components/Toasts";
 import { createClient } from "@/lib/supabase/server";
+import { getTenantIdByDomain, getTenantData } from "@/lib/supabase/tenant-data";
 import { notFound } from "next/navigation";
-import { headers } from "next/headers";
-import { unstable_cache } from "next/cache";
 import { MessageCircle } from "lucide-react";
 import type { Metadata } from "next";
+
+// Strips the local dev suffix from the domain param (e.g. "demo.localhost:3000" → "demo")
+function extractSubdomain(rawDomain: string): string {
+  return decodeURIComponent(rawDomain)
+    .replace(/\.localhost(:\d+)?$/, "")
+    .replace(/\.\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(\.nip\.io)?(:\d+)?$/, "");
+}
 
 export async function generateMetadata(
   props: { params: Promise<{ domain: string }> }
 ): Promise<Metadata> {
   const params = await props.params;
-  const rawDomain = decodeURIComponent(params.domain);
-  const domain = rawDomain.replace(/\.localhost:\d+$/, "").replace(/\.\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?:\.nip\.io)?(:\d+)?$/, "");
+  const domain = extractSubdomain(params.domain);
 
-  const supabase = await createClient();
-  const { data: tenant } = await supabase.rpc("get_tenant_id_by_domain", { req_domain: domain });
-  
-  if (!tenant) return { title: "Non trouvé" };
+  const tenantId = await getTenantIdByDomain(domain);
+  if (!tenantId) return { title: "Non trouvé" };
 
-  const getCachedMeta = unstable_cache(
-    async (id: string) => {
-      const { data } = await supabase.from("tenants").select(`salon_settings (*)`).eq("id", id).single();
-      return data;
-    },
-    [`tenant-meta-${domain}`],
-    { revalidate: 60, tags: [`tenant-${domain}`] }
-  );
-
-  const tenantData = await getCachedMeta(tenant);
+  const tenantData = await getTenantData(tenantId);
   const settings = tenantData?.salon_settings?.[0];
 
   if (!settings) return { title: "Salon de Beauté" };
@@ -51,23 +45,13 @@ export default async function TenantLayout(props: {
   params: Promise<{ domain: string }>;
 }) {
   const params = await props.params;
-  
-  // Clean the domain (e.g., remove .localhost:3000 or .192.168.x.x:3000 if it snuck in)
-  const rawDomain = decodeURIComponent(params.domain);
-  const domain = rawDomain.replace(/\.localhost:\d+$/, "").replace(/\.\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?:\.nip\.io)?(:\d+)?$/, "");
+  const domain = extractSubdomain(params.domain);
+
+  // 1. Look up tenant by subdomain (single source of truth)
+  const tenantId = await getTenantIdByDomain(domain);
+  if (!tenantId) notFound();
 
   const supabase = await createClient();
-
-  // 1. Fetch Tenant
-  const { data: tenant, error: tenantError } = await supabase
-    .rpc("get_tenant_id_by_domain", { req_domain: domain });
-
-  // If no tenant found for this subdomain/domain, show 404
-  if (tenantError || !tenant) {
-    notFound();
-  }
-
-  const tenantId = tenant;
 
   // 2. Check Subscription Status & Expiration
   const { data: tenantRecord } = await supabase
@@ -76,7 +60,7 @@ export default async function TenantLayout(props: {
     .eq("id", tenantId)
     .single();
 
-  const isAutoSuspended = tenantRecord?.plan_expires_at && 
+  const isAutoSuspended = tenantRecord?.plan_expires_at &&
     new Date() > new Date(new Date(tenantRecord.plan_expires_at).getTime() + 72 * 60 * 60 * 1000);
 
   if (tenantRecord?.subscription_status === "locked" || isAutoSuspended) {
@@ -94,26 +78,8 @@ export default async function TenantLayout(props: {
     );
   }
 
-  // 3. Fetch all data in a SINGLE relational query, cached via Next.js ISR (60 seconds)
-  const getCachedTenantData = unstable_cache(
-    async (id: string) => {
-      const { data } = await supabase
-        .from("tenants")
-        .select(`
-          salon_settings (*),
-          services (*),
-          appointments (*),
-          portfolio (*)
-        `)
-        .eq("id", id)
-        .single();
-      return data;
-    },
-    [`tenant-data-${domain}`], // Unique cache key per domain
-    { revalidate: 60, tags: [`tenant-${domain}`] } // Revalidate every 60 seconds
-  );
-
-  const tenantData = await getCachedTenantData(tenantId);
+  // 3. Fetch all data in a SINGLE relational query
+  const tenantData = await getTenantData(tenantId);
 
   const settings = tenantData?.salon_settings?.[0];
   const services = tenantData?.services || [];

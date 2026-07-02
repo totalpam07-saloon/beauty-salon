@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getTenantIdByDomain, getCachedTenantData } from "@/lib/supabase/tenant-data";
+import { getTenantIdByDomain, getTenantData } from "@/lib/supabase/tenant-data";
 import ClientPortfolioManager from "./ClientPortfolioManager";
 
 export default async function PortfolioPage(props: { params: Promise<{ domain: string }> }) {
@@ -10,13 +10,36 @@ export default async function PortfolioPage(props: { params: Promise<{ domain: s
   const tenantId = await getTenantIdByDomain(domain);
   if (!tenantId) notFound();
 
-  const fetcher = getCachedTenantData(domain);
-  const data = await fetcher(tenantId);
+  const data = await getTenantData(tenantId);
   
   if (!data) notFound();
 
-  const portfolio = data.portfolio || [];
-  const services = data.services || [];
+  const rawPortfolio = data.portfolio || [];
+  const rawServices = data.services || [];
+
+  const portfolio = rawPortfolio.map((p: any) => ({
+    id: p.id,
+    imageUrl: p.image_url,
+    category: p.category,
+    caption: p.caption,
+    instagramUrl: p.ig_link,
+    createdAt: p.created_at
+  }));
+
+  const services = rawServices.map((s: any) => ({
+    id: s.id,
+    name: s.name,
+    priceUSD: s.price_usd,
+    priceHTG: s.price_htg,
+    depositType: s.deposit_type,
+    depositPercentage: s.deposit_percentage,
+    depositFixedUSD: s.deposit_fixed_usd,
+    depositFixedHTG: s.deposit_fixed_htg,
+    duration: s.duration,
+    imageUrl: s.image_url,
+    category: s.category,
+    description: s.description
+  }));
 
   return (
     <ClientPortfolioManager 

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getTenantIdByDomain, getCachedTenantData } from "@/lib/supabase/tenant-data";
+import { getTenantIdByDomain, getTenantData } from "@/lib/supabase/tenant-data";
 import { createClient } from "@/lib/supabase/server";
 import ClientSettingsManager from "./ClientSettingsManager";
 
@@ -11,12 +11,35 @@ export default async function SettingsPage(props: { params: Promise<{ domain: st
   const tenantId = await getTenantIdByDomain(domain);
   if (!tenantId) notFound();
 
-  const fetcher = getCachedTenantData(domain);
-  const data = await fetcher(tenantId);
+  const data = await getTenantData(tenantId);
   
   if (!data || !data.salon_settings?.[0]) notFound();
 
-  const settings = data.salon_settings[0];
+  const rawSettings = data.salon_settings[0];
+
+  const settings = {
+    salonName: rawSettings.salon_name,
+    monCashNumber: rawSettings.moncash_number || "",
+    natCashNumber: rawSettings.natcash_number || "",
+    zelleInfo: rawSettings.zelle_info || "",
+    cashAppInfo: rawSettings.cashapp_info || "",
+    paypalInfo: rawSettings.paypal_info || "",
+    logoUrl: rawSettings.logo_url,
+    bannerUrl: rawSettings.banner_url,
+    description: rawSettings.description,
+    headerDisplay: rawSettings.header_display,
+    bufferMinutes: rawSettings.buffer_minutes,
+    showAvailability: rawSettings.show_availability,
+    workingHours: rawSettings.working_hours,
+    theme: rawSettings.theme,
+    customThemeColor: rawSettings.custom_theme_color,
+    instagramUrl: rawSettings.instagram_url,
+    facebookUrl: rawSettings.facebook_url,
+    tiktokUrl: rawSettings.tiktok_url,
+    whatsappNumber: rawSettings.whatsapp_number,
+    address: rawSettings.address,
+    whatsappVisibility: rawSettings.whatsapp_visibility,
+  };
   
   const supabase = await createClient();
   const { data: tenant } = await supabase.from("tenants").select("domain").eq("id", tenantId).single();

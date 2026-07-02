@@ -19,7 +19,7 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      // 1. Authenticate with Supabase
+      // 1. Sign in with Supabase
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -27,51 +27,51 @@ export default function LoginPage() {
 
       if (authError) throw authError;
 
-      // 2. Fetch the tenant domain for this user
-      const { data: tenantData, error: tenantError } = await supabase
-        .from("tenants")
-        .select("subdomain")
-        .eq("owner_id", authData.user.id)
+      const userId = authData.user.id;
+      const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || "localhost:3000";
+      const isLocal = window.location.hostname === "localhost" || window.location.hostname.includes("127.0.0.1");
+      const scheme = isLocal ? "http" : "https";
+
+      // 2. Check if superadmin
+      const { data: superadmin } = await supabase
+        .from("superadmins")
+        .select("id")
+        .eq("user_id", userId)
         .single();
 
-      if (tenantError) {
-        // If they don't have a salon, check if they are a superadmin
-        const { data: superadmin } = await supabase
-          .from("superadmins")
-          .select("id")
-          .eq("user_id", authData.user.id)
-          .single();
-
-        if (superadmin) {
-          window.location.href = "/superadmin";
-          return;
-        }
-        // No salon and no superadmin role → send them to create a salon
-        window.location.href = "/signup";
+      if (superadmin) {
+        window.location.href = "/superadmin";
         return;
       }
 
-      // 3. Redirect to their specific dashboard using token handoff
-      //    Chrome blocks cookies from localhost → subdomain.localhost, so we
-      //    pass the session tokens in the URL to a special page that sets the
-      //    cookie directly on the subdomain.
-      const { data: { session } } = await supabase.auth.getSession();
-      const accessToken = session?.access_token;
-      const refreshToken = session?.refresh_token;
+      // 3. Check if salon owner
+      const { data: tenant } = await supabase
+        .from("tenants")
+        .select("subdomain")
+        .eq("owner_id", userId)
+        .single();
 
-      const isLocal = window.location.hostname.includes("localhost");
-      const isNip = window.location.hostname.includes("nip.io");
-      
-      if (isLocal || isNip) {
-        const subdomain = tenantData.subdomain;
-        window.location.href =
-          `http://${subdomain}.${window.location.host}/auth/set-session` +
-          `?access_token=${encodeURIComponent(accessToken ?? "")}` +
-          `&refresh_token=${encodeURIComponent(refreshToken ?? "")}`;
-      } else {
-        const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || "localhost:3000";
-        window.location.href = `https://${tenantData.subdomain}.${rootDomain}/admin`;
+      if (tenant) {
+        // In production, cookies are shared across subdomains via the `.domain` cookie option.
+        // Locally, browsers block cookie sharing between localhost and demo.localhost,
+        // so we pass tokens via URL to the set-session page on the subdomain.
+        const { data: { session } } = await supabase.auth.getSession();
+        const accessToken = session?.access_token ?? "";
+        const refreshToken = session?.refresh_token ?? "";
+
+        if (isLocal) {
+          window.location.href =
+            `http://${tenant.subdomain}.${rootDomain}/auth/set-session` +
+            `?access_token=${encodeURIComponent(accessToken)}` +
+            `&refresh_token=${encodeURIComponent(refreshToken)}`;
+        } else {
+          window.location.href = `https://${tenant.subdomain}.${rootDomain}/admin`;
+        }
+        return;
       }
+
+      // 4. No role found → send to signup
+      window.location.href = "/signup";
 
     } catch (err: unknown) {
       setError(t("saas.loginError"));

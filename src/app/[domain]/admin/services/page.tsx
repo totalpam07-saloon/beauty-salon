@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getTenantIdByDomain, getCachedTenantData } from "@/lib/supabase/tenant-data";
+import { getTenantIdByDomain, getTenantData } from "@/lib/supabase/tenant-data";
 import ClientServicesManager from "./ClientServicesManager";
 
 export default async function ServicesPage(props: { params: Promise<{ domain: string }> }) {
@@ -10,12 +10,26 @@ export default async function ServicesPage(props: { params: Promise<{ domain: st
   const tenantId = await getTenantIdByDomain(domain);
   if (!tenantId) notFound();
 
-  const fetcher = getCachedTenantData(domain);
-  const data = await fetcher(tenantId);
+  const data = await getTenantData(tenantId);
   
   if (!data) notFound();
 
-  const services = data.services || [];
+  const rawServices = data.services || [];
+
+  const services = rawServices.map((s: any) => ({
+    id: s.id,
+    name: s.name,
+    priceUSD: s.price_usd,
+    priceHTG: s.price_htg,
+    depositType: s.deposit_type,
+    depositPercentage: s.deposit_percentage,
+    depositFixedUSD: s.deposit_fixed_usd,
+    depositFixedHTG: s.deposit_fixed_htg,
+    duration: s.duration,
+    imageUrl: s.image_url,
+    category: s.category,
+    description: s.description
+  }));
 
   return (
     <ClientServicesManager 
