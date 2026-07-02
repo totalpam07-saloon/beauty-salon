@@ -35,11 +35,10 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <ThemeProvider
           attribute="data-theme"
-          defaultTheme="soft"
+          defaultTheme="earthy"
           themes={["soft", "dark", "earthy"]}
         >
           <I18nProvider>
-            <Navbar />
             <main className="flex-1 flex flex-col">
               {children}
             </main>
