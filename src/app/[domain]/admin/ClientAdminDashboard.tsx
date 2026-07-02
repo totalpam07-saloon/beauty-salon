@@ -183,7 +183,7 @@ export default function ClientAdminDashboard({ tenantId, domain, services, setti
             {/* Mobile View: Cards */}
             <div className="grid grid-cols-1 gap-4 md:hidden">
               {pending.map((appt) => (
-                <div key={appt.id} onClick={() => setSelectedAppointment(appt)} className="bg-card border border-border rounded-3xl p-5 shadow-sm space-y-4 relative">
+                <div key={appt.id} onClick={() => setSelectedAppointment(appt)} className="bg-card border border-border rounded-3xl p-5 shadow-sm space-y-4 relative cursor-pointer active:scale-[0.99] hover:border-primary/50 transition-all">
                   <div className="flex justify-between items-start gap-2">
                     <div>
                       <h3 className="font-black text-lg text-foreground">{appt.clientName}</h3>
@@ -281,7 +281,7 @@ export default function ClientAdminDashboard({ tenantId, domain, services, setti
           {/* Mobile View: Cards */}
           <div className="grid grid-cols-1 gap-3 md:hidden">
             {approved.map((appt) => (
-              <div key={appt.id} onClick={() => setSelectedAppointment(appt)} className="bg-card border border-border rounded-2xl p-4 shadow-sm flex flex-col gap-2">
+              <div key={appt.id} onClick={() => setSelectedAppointment(appt)} className="bg-card border border-border rounded-2xl p-4 shadow-sm flex flex-col gap-2 cursor-pointer active:scale-[0.99] hover:border-primary/50 transition-all">
                 <div className="flex justify-between items-center">
                   <span className="font-black text-foreground">{appt.clientName}</span>
                   <div className="flex items-center gap-1.5 px-2 py-1 bg-green-500/10 text-green-600 rounded-lg text-xs font-bold border border-green-500/20">

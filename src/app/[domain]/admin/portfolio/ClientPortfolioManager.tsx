@@ -145,9 +145,9 @@ export default function ClientPortfolioManager({ tenantId, domain, portfolio, se
           <p className="text-sm mt-1">Cliquez sur &ldquo;Ajouter une Photo&rdquo; pour commencer.</p>
         </div>
       ) : (
-        <div className="columns-2 sm:columns-3 md:columns-4 gap-3 space-y-3">
+        <div className="columns-2 sm:columns-3 md:columns-4 gap-3">
           {portfolio.map((photo) => (
-            <div key={photo.id} className="break-inside-avoid rounded-2xl overflow-hidden relative group shadow-sm">
+            <div key={photo.id} className="break-inside-avoid mb-3 rounded-2xl overflow-hidden relative group shadow-sm">
               <Image 
                 unoptimized
                 src={photo.imageUrl} 

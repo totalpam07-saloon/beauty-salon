@@ -15,8 +15,39 @@ export default async function AdminDashboardPage(props: { params: Promise<{ doma
   if (!data) notFound();
 
   const settings = data.salon_settings?.[0];
-  const services = data.services || [];
-  const appointments = data.appointments || [];
+  const rawServices = data.services || [];
+  const rawAppointments = data.appointments || [];
+
+  const services = rawServices.map((s: any) => ({
+    id: s.id,
+    name: s.name,
+    priceUSD: s.price_usd,
+    priceHTG: s.price_htg,
+    depositType: s.deposit_type,
+    depositPercentage: s.deposit_percentage || 0,
+    depositFixedUSD: s.deposit_fixed_usd || 0,
+    depositFixedHTG: s.deposit_fixed_htg || 0,
+    duration: s.duration,
+    imageUrl: s.image_url || "",
+    category: s.category || "",
+    description: s.description || ""
+  }));
+
+  const appointments = rawAppointments.map((a: any) => ({
+    id: a.id,
+    clientName: a.client_name,
+    clientPhone: a.client_phone || "",
+    clientEmail: a.client_email || "",
+    serviceId: a.service_id,
+    serviceName: services.find((s: any) => s.id === a.service_id)?.name || "Service",
+    date: a.date,
+    time: a.time,
+    status: a.status,
+    screenshotName: a.deposit_receipt_url,
+    paymentMethod: "N/A", 
+    amountPaid: "N/A", 
+    createdAt: a.created_at,
+  }));
 
   if (!settings) notFound();
 

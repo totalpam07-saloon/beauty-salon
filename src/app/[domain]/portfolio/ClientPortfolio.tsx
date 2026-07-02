@@ -71,12 +71,12 @@ export default function ClientPortfolio({ services, settings, portfolio }: Clien
             <p>{t("portfolio.empty")}</p>
           </div>
         ) : (
-          <div className="columns-2 sm:columns-3 md:columns-4 gap-3 space-y-3">
+          <div className="columns-2 sm:columns-3 md:columns-4 gap-3">
             {filtered.map((photo) => (
               <div
                 key={photo.id}
                 onClick={() => setSelected(photo.id)}
-                className="break-inside-avoid rounded-2xl overflow-hidden cursor-pointer group relative shadow-sm hover:shadow-xl transition-all duration-300"
+                className="break-inside-avoid mb-3 rounded-2xl overflow-hidden cursor-pointer group relative shadow-sm hover:shadow-xl transition-all duration-300"
               >
                 <Image
                   src={photo.imageUrl}

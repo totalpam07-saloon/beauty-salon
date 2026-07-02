@@ -138,8 +138,18 @@ export default function ClientSettingsManager({ tenantId, domain, settings, cust
           ))}
           
           <button disabled={isPending} onClick={handleSave}
-            className={`mt-4 w-full flex items-center justify-center gap-2 p-4 rounded-2xl font-extrabold text-lg transition-all duration-300 shadow-md disabled:opacity-50 ${
+            className={`hidden md:flex mt-4 w-full items-center justify-center gap-2 p-4 rounded-2xl font-extrabold text-lg transition-all duration-300 shadow-md disabled:opacity-50 ${
               saved ? "bg-green-500 text-white" : "bg-foreground text-background hover:opacity-90"
+            }`}>
+            {saved ? <><Check size={20} /> Enregistré</> : (isPending ? "Enregistrement..." : t("admin.saveBtn"))}
+          </button>
+        </div>
+
+        {/* Floating Save Button (Mobile) */}
+        <div className="fixed bottom-24 left-4 right-4 z-[100] md:hidden">
+          <button disabled={isPending} onClick={handleSave}
+            className={`w-full flex items-center justify-center gap-2 p-4 rounded-2xl font-extrabold text-lg transition-all duration-300 shadow-2xl disabled:opacity-50 ${
+              saved ? "bg-green-500 text-white" : "bg-foreground text-background"
             }`}>
             {saved ? <><Check size={20} /> Enregistré</> : (isPending ? "Enregistrement..." : t("admin.saveBtn"))}
           </button>

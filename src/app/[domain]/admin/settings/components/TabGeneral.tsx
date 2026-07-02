@@ -189,17 +189,17 @@ export function TabGeneral({
           <input className={inputClass} placeholder="+509 XXXX-XXXX" value={form.whatsappNumber || ""} onChange={(e) => setForm({ ...form, whatsappNumber: e.target.value })} />
         </div>
         
-        <div className="space-y-2">
+        <div className="space-y-2 max-w-full overflow-hidden">
           <label className="text-xs font-bold text-foreground/60 ml-1 block">Style du bouton WhatsApp</label>
           <select 
-            className={`${inputClass} appearance-none bg-no-repeat`} 
-            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundPosition: 'right 1rem center', backgroundSize: '1.5em' }}
+            className={`${inputClass} appearance-none bg-no-repeat pr-12 text-ellipsis`} 
+            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundPosition: 'right 1rem center', backgroundSize: '1.2em' }}
             value={form.whatsappVisibility || "floating"} 
             onChange={(e) => setForm({ ...form, whatsappVisibility: e.target.value as any })}
           >
-            <option value="floating">Flottant (Bouton sur toutes les pages)</option>
-            <option value="inline">Intégré (Dans les détails des services et portfolio)</option>
-            <option value="hidden">Masqué (Ne pas afficher de bouton WhatsApp)</option>
+            <option value="floating">Flottant (Toutes les pages)</option>
+            <option value="inline">Intégré (Détails des services/portfolio)</option>
+            <option value="hidden">Masqué (Aucun bouton)</option>
           </select>
         </div>
       </div>

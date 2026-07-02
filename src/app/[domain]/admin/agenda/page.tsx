@@ -14,7 +14,13 @@ export default async function AgendaPage(props: { params: Promise<{ domain: stri
   
   if (!data) notFound();
 
+  const rawServices = data.services || [];
   const rawAppointments = data.appointments || [];
+
+  const services = rawServices.map((s: any) => ({
+    id: s.id,
+    name: s.name,
+  }));
 
   const appointments = rawAppointments.map((a: any) => ({
     id: a.id,
@@ -22,7 +28,7 @@ export default async function AgendaPage(props: { params: Promise<{ domain: stri
     clientPhone: a.client_phone,
     clientEmail: a.client_email,
     serviceId: a.service_id,
-    serviceName: a.service_name || "",
+    serviceName: services.find((s: any) => s.id === a.service_id)?.name || "Service",
     date: a.date,
     time: a.time,
     status: a.status,
