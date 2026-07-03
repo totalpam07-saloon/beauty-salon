@@ -14,11 +14,59 @@ export default async function HomePage(props: { params: Promise<{ domain: string
   
   if (!data) notFound();
 
-  const settings = data.salon_settings?.[0];
-  const services = data.services || [];
-  const portfolio = data.portfolio || [];
+  const rawSettings = data.salon_settings?.[0];
+  const rawServices = data.services || [];
+  const rawPortfolio = data.portfolio || [];
 
-  if (!settings) notFound();
+  if (!rawSettings) notFound();
+
+  const settings = {
+    salonName: rawSettings.salon_name,
+    monCashNumber: rawSettings.moncash_number || "",
+    natCashNumber: rawSettings.natcash_number || "",
+    zelleInfo: rawSettings.zelle_info || "",
+    cashAppInfo: rawSettings.cashapp_info || "",
+    paypalInfo: rawSettings.paypal_info || "",
+    logoUrl: rawSettings.logo_url,
+    bannerUrl: rawSettings.banner_url,
+    description: rawSettings.description,
+    headerDisplay: rawSettings.header_display,
+    bufferMinutes: rawSettings.buffer_minutes,
+    showAvailability: rawSettings.show_availability,
+    workingHours: rawSettings.working_hours,
+    theme: rawSettings.theme,
+    customThemeColor: rawSettings.custom_theme_color,
+    instagramUrl: rawSettings.instagram_url,
+    facebookUrl: rawSettings.facebook_url,
+    tiktokUrl: rawSettings.tiktok_url,
+    whatsappNumber: rawSettings.whatsapp_number,
+    address: rawSettings.address,
+    whatsappVisibility: rawSettings.whatsapp_visibility,
+  };
+
+  const services = rawServices.map((s: any) => ({
+    id: s.id,
+    name: s.name,
+    priceUSD: s.price_usd || 0,
+    priceHTG: s.price_htg || 0,
+    depositType: s.deposit_type,
+    depositPercentage: s.deposit_percentage || 0,
+    depositFixedUSD: s.deposit_fixed_usd || 0,
+    depositFixedHTG: s.deposit_fixed_htg || 0,
+    duration: s.duration,
+    imageUrl: s.image_url,
+    category: s.category,
+    description: s.description
+  }));
+
+  const portfolio = rawPortfolio.map((p: any) => ({
+    id: p.id,
+    imageUrl: p.image_url,
+    category: p.category,
+    caption: p.caption,
+    instagramUrl: p.ig_link,
+    createdAt: p.created_at
+  }));
 
   return (
     <ClientHome 

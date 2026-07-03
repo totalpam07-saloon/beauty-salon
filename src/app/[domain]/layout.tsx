@@ -5,7 +5,7 @@ import { Toasts } from "@/components/Toasts";
 import { createClient } from "@/lib/supabase/server";
 import { getTenantIdByDomain, getTenantData } from "@/lib/supabase/tenant-data";
 import { notFound } from "next/navigation";
-import { MessageCircle } from "lucide-react";
+import { ClientWhatsApp } from "@/components/ClientWhatsApp";
 import type { Metadata } from "next";
 
 // Strips the local dev suffix from the domain param (e.g. "demo.localhost:3000" → "demo")
@@ -189,10 +189,7 @@ export default async function TenantLayout(props: {
           <Footer settings={formattedSettings} />
         </div>
         {formattedSettings?.whatsappVisibility === "floating" && formattedSettings?.whatsappNumber && (
-          <a href={`https://wa.me/${formattedSettings.whatsappNumber.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" 
-            className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-[0_4px_20px_rgba(37,211,102,0.4)] hover:scale-110 hover:-translate-y-1 transition-all duration-300 animate-in slide-in-from-bottom-5">
-            <MessageCircle size={28} />
-          </a>
+          <ClientWhatsApp number={formattedSettings.whatsappNumber} />
         )}
         <Toasts />
       </div>
