@@ -140,7 +140,34 @@
     "bufferDesc": "Tan netwayaj/preparasyon ant de randevou.",
     "showAvail": "Montre disponibilite yo",
     "showAvailDesc": "Kliyan yo pral wè kreno ki deja rezève (\"Pran\").",
-    "saved": "Anrejistre!",
-    "saveBtn": "Sove"
+    "saveBtn": "Sove",
+    "closed": "Fèmen",
+    "general": "Jeneral",
+    "appearance": "Aparans",
+    "payments": "Pèman (Kliyan)",
+    "billing": "Abonnman (SaaS)",
+    "identity": "Idantite Salon an",
+    "slogan": "Eslogan / Deskripsyon (SEO)",
+    "address": "Adrès Fizik",
+    "customDomain": "Domèn Pèsonalize",
+    "logo": "Logo Salon an",
+    "headerDisplay": "Aparans nan tèt (Navbar)",
+    "banner": "Foto banyè (Hero)",
+    "socials": "Rezo Sosyal ak Kontak",
+    "whatsappStyle": "Stil bouton WhatsApp la",
+    "floating": "Flotan (Sou tout paj)",
+    "inline": "Entegre (Nan detay sèvis/pòtfolyo)",
+    "hidden": "Kache (Pa gen bouton)",
+    "profile": "Pwofil Mwen",
+    "profileSub": "Jere enfòmasyon pèsonèl ak sekirite ou.",
+    "avatar": "Foto Pwofil",
+    "info": "Enfòmasyon",
+    "fullName": "Non Konplè",
+    "emailAddress": "Imèl",
+    "logout": "Dekonekte"
+  },
+  "footer": {
+    "rights": "Tout dwa rezève.",
+    "powered": "Pouvwa pa Crochetri"
   }
 }

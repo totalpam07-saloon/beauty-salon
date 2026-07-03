@@ -78,7 +78,7 @@ export function TabHours({
                   </div>
                 )}
                 {!dayData.enabled && (
-                  <span className="text-xs font-bold text-foreground/30">{language === "ht" ? "Fermé" : "Fermé"}</span>
+                  <span className="text-xs font-bold text-foreground/30">{t("admin.closed")}</span>
                 )}
               </div>
             </div>

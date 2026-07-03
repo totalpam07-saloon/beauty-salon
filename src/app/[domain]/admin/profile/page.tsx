@@ -72,8 +72,8 @@ export default function ProfilePage() {
   return (
     <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4">
       <div>
-        <h1 className="text-3xl font-extrabold text-foreground">Mon Profil</h1>
-        <p className="text-foreground/50 mt-1">Gérez vos informations personnelles et votre sécurité.</p>
+        <h1 className="text-3xl font-extrabold text-foreground">{t("admin.profile")}</h1>
+        <p className="text-foreground/50 mt-1">{t("admin.profileSub")}</p>
       </div>
 
       <div className="bg-card border border-border rounded-3xl p-6 md:p-8 shadow-sm space-y-8">
@@ -83,7 +83,7 @@ export default function ProfilePage() {
           <div className="w-full md:w-1/3 space-y-4">
             <h3 className="font-extrabold text-foreground flex items-center gap-2">
               <UserIcon size={20} className="text-primary" />
-              Photo de Profil
+              {t("admin.avatar")}
             </h3>
             <p className="text-xs text-foreground/50">Apparaîtra dans le menu en haut à droite.</p>
           </div>
@@ -106,12 +106,12 @@ export default function ProfilePage() {
           <div className="w-full md:w-1/3 space-y-4">
             <h3 className="font-extrabold text-foreground flex items-center gap-2">
               <Mail size={20} className="text-primary" />
-              Informations
+              {t("admin.info")}
             </h3>
           </div>
           <div className="w-full md:w-2/3 space-y-4">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-foreground/60 ml-1 block">Nom Complet</label>
+              <label className="text-xs font-bold text-foreground/60 ml-1 block">{t("admin.fullName")}</label>
               <input 
                 className={inputClass} 
                 placeholder="Ex: Jean Dupont" 
@@ -121,7 +121,7 @@ export default function ProfilePage() {
             </div>
             
             <div className="space-y-2">
-              <label className="text-xs font-bold text-foreground/60 ml-1 block">Adresse Email</label>
+              <label className="text-xs font-bold text-foreground/60 ml-1 block">{t("admin.emailAddress")}</label>
               <input 
                 className={`${inputClass} opacity-50 cursor-not-allowed`} 
                 value={email} 
@@ -150,9 +150,9 @@ export default function ProfilePage() {
             {saving ? (
               "Enregistrement..."
             ) : saved ? (
-              <><Check size={20} /> Enregistré</>
+              <><Check size={20} /> {t("admin.saved")}</>
             ) : (
-              <><Save size={20} /> Sauvegarder</>
+              <><Save size={20} /> {t("admin.saveBtn")}</>
             )}
           </button>
         </div>

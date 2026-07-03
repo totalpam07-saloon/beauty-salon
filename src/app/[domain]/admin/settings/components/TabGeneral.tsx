@@ -28,7 +28,7 @@ export function TabGeneral({
     <div className="space-y-8">
       {/* Salon Identity */}
       <div className="space-y-4">
-        <p className="text-sm font-extrabold text-foreground/80 border-b border-border pb-2">🏪 Identité du Salon</p>
+        <p className="text-sm font-extrabold text-foreground/80 border-b border-border pb-2">🏪 {t("admin.identity")}</p>
         <div className="space-y-2">
           <label className="text-xs font-bold text-foreground/60 ml-1 block">{t("admin.salonName")}</label>
           <input className={inputClass} value={form.salonName} onChange={(e) => setForm({ ...form, salonName: e.target.value })} />
@@ -36,7 +36,7 @@ export function TabGeneral({
 
         <div className="space-y-2">
           <label className="text-xs font-bold text-foreground/60 ml-1 block flex justify-between">
-            <span>Slogan / Description (SEO)</span>
+            <span>{t("admin.slogan")}</span>
             <span className={`${(form.description?.length || 0) > 160 ? "text-red-500" : "text-foreground/40"}`}>{form.description?.length || 0}/160</span>
           </label>
           <textarea 
@@ -50,12 +50,12 @@ export function TabGeneral({
         </div>
 
         <div className="space-y-2">
-          <label className="text-xs font-bold text-foreground/60 ml-1 block">Adresse Physique</label>
+          <label className="text-xs font-bold text-foreground/60 ml-1 block">{t("admin.address")}</label>
           <textarea className={`${inputClass} min-h-[80px] resize-y`} placeholder="Ex: 123 Rue de la Paix, Port-au-Prince" value={form.address || ""} onChange={(e) => setForm({ ...form, address: e.target.value })} />
         </div>
 
         <div className="space-y-2">
-          <label className="text-xs font-bold text-foreground/60 ml-1 block">Domaine Personnalisé (Optionnel)</label>
+          <label className="text-xs font-bold text-foreground/60 ml-1 block">{t("admin.customDomain")} ({t("admin.optional")})</label>
           <div className="flex gap-2">
             <input 
               className={inputClass} 
@@ -141,14 +141,14 @@ export function TabGeneral({
 
         {/* Logo */}
         <ImageInput
-          label="Logo du salon"
+          label={t("admin.logo")}
           hint="Apparaît dans la barre de navigation."
           value={form.logoUrl}
           onChange={(url) => setForm({ ...form, logoUrl: url })}
         />
 
         <div className="space-y-2">
-          <label className="text-xs font-bold text-foreground/60 ml-1 block">Affichage dans l'en-tête (Navbar)</label>
+          <label className="text-xs font-bold text-foreground/60 ml-1 block">{t("admin.headerDisplay")}</label>
           <select 
             className={inputClass}
             value={form.headerDisplay || "both"}
@@ -162,7 +162,7 @@ export function TabGeneral({
 
         {/* Banner */}
         <ImageInput
-          label="Photo bannière (Hero)"
+          label={t("admin.banner")}
           hint="Grande photo en arrière-plan de la page d'accueil."
           value={form.bannerUrl}
           onChange={(url) => setForm({ ...form, bannerUrl: url })}
@@ -171,7 +171,7 @@ export function TabGeneral({
 
       {/* Social Media */}
       <div className="space-y-4">
-        <p className="text-sm font-extrabold text-foreground/80 border-b border-border pb-2">🌐 Réseaux Sociaux & Contact</p>
+        <p className="text-sm font-extrabold text-foreground/80 border-b border-border pb-2">🌐 {t("admin.socials")}</p>
         <div className="space-y-2">
           <label className="text-xs font-bold text-foreground/60 ml-1 block">Instagram URL</label>
           <input className={inputClass} placeholder="https://instagram.com/votresalon" value={form.instagramUrl || ""} onChange={(e) => setForm({ ...form, instagramUrl: e.target.value })} />
@@ -190,16 +190,16 @@ export function TabGeneral({
         </div>
         
         <div className="space-y-2 max-w-full overflow-hidden">
-          <label className="text-xs font-bold text-foreground/60 ml-1 block">Style du bouton WhatsApp</label>
+          <label className="text-xs font-bold text-foreground/60 ml-1 block">{t("admin.whatsappStyle")}</label>
           <select 
             className={`${inputClass} appearance-none bg-no-repeat pr-12 text-ellipsis`} 
             style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundPosition: 'right 1rem center', backgroundSize: '1.2em' }}
             value={form.whatsappVisibility || "floating"} 
             onChange={(e) => setForm({ ...form, whatsappVisibility: e.target.value as any })}
           >
-            <option value="floating">Flottant (Toutes les pages)</option>
-            <option value="inline">Intégré (Détails des services/portfolio)</option>
-            <option value="hidden">Masqué (Aucun bouton)</option>
+            <option value="floating">{t("admin.floating")}</option>
+            <option value="inline">{t("admin.inline")}</option>
+            <option value="hidden">{t("admin.hidden")}</option>
           </select>
         </div>
       </div>

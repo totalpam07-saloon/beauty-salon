@@ -63,7 +63,7 @@ export function Footer({ settings }: { settings?: SalonSettings | null }) {
               </p>
             )}
             <p className="text-sm font-medium text-foreground/50">
-              © {currentYear} {settings.salonName}. Tous droits réservés.
+              © {currentYear} {settings.salonName}. {t("footer.rights")}
             </p>
             <a 
               href="https://crochetri.store" 
@@ -74,7 +74,7 @@ export function Footer({ settings }: { settings?: SalonSettings | null }) {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-3.5 h-3.5" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
               </svg>
-              Propulsé par Crochetri
+              {t("footer.powered")}
             </a>
           </div>
 

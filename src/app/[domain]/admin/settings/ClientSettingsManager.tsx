@@ -105,11 +105,11 @@ export default function ClientSettingsManager({ tenantId, domain, settings, cust
   };
 
   const tabs = [
-    { id: "general", label: "Général", icon: Settings },
-    { id: "appearance", label: "Apparence", icon: Palette },
-    { id: "hours", label: "Horaires", icon: Clock },
-    { id: "payments", label: "Paiements (Clients)", icon: CreditCard },
-    { id: "billing", label: "Abonnement (SaaS)", icon: Crown },
+    { id: "general", label: t("admin.general"), icon: Settings },
+    { id: "appearance", label: t("admin.appearance"), icon: Palette },
+    { id: "hours", label: t("admin.workingHours"), icon: Clock },
+    { id: "payments", label: t("admin.payments"), icon: CreditCard },
+    { id: "billing", label: t("admin.billing"), icon: Crown },
   ] as const;
 
   return (
@@ -141,7 +141,7 @@ export default function ClientSettingsManager({ tenantId, domain, settings, cust
             className={`hidden md:flex mt-4 w-full items-center justify-center gap-2 p-4 rounded-2xl font-extrabold text-lg transition-all duration-300 shadow-md disabled:opacity-50 ${
               saved ? "bg-green-500 text-white" : "bg-foreground text-background hover:opacity-90"
             }`}>
-            {saved ? <><Check size={20} /> Enregistré</> : (isPending ? "Enregistrement..." : t("admin.saveBtn"))}
+            {saved ? <><Check size={20} /> {t("admin.saved")}</> : (isPending ? "..." : t("admin.saveBtn"))}
           </button>
         </div>
 
@@ -151,7 +151,7 @@ export default function ClientSettingsManager({ tenantId, domain, settings, cust
             className={`w-full flex items-center justify-center gap-2 p-4 rounded-2xl font-extrabold text-lg transition-all duration-300 shadow-2xl disabled:opacity-50 ${
               saved ? "bg-green-500 text-white" : "bg-foreground text-background"
             }`}>
-            {saved ? <><Check size={20} /> Enregistré</> : (isPending ? "Enregistrement..." : t("admin.saveBtn"))}
+            {saved ? <><Check size={20} /> {t("admin.saved")}</> : (isPending ? "..." : t("admin.saveBtn"))}
           </button>
         </div>
 

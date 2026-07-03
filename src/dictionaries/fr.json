@@ -140,7 +140,34 @@
     "bufferDesc": "Temps de nettoyage/préparation entre deux rendez-vous.",
     "showAvail": "Afficher les disponibilités",
     "showAvailDesc": "Les clients verront les créneaux déjà réservés (comme \"Pris\").",
-    "saved": "Enregistré!",
-    "saveBtn": "Sauvegarder"
+    "saveBtn": "Sauvegarder",
+    "closed": "Fermé",
+    "general": "Général",
+    "appearance": "Apparence",
+    "payments": "Paiements (Clients)",
+    "billing": "Abonnement (SaaS)",
+    "identity": "Identité du Salon",
+    "slogan": "Slogan / Description (SEO)",
+    "address": "Adresse Physique",
+    "customDomain": "Domaine Personnalisé",
+    "logo": "Logo du salon",
+    "headerDisplay": "Affichage dans l'en-tête (Navbar)",
+    "banner": "Photo bannière (Hero)",
+    "socials": "Réseaux Sociaux & Contact",
+    "whatsappStyle": "Style du bouton WhatsApp",
+    "floating": "Flottant (Toutes les pages)",
+    "inline": "Intégré (Détails des services/portfolio)",
+    "hidden": "Masqué (Aucun bouton)",
+    "profile": "Mon Profil",
+    "profileSub": "Gérez vos informations personnelles et votre sécurité.",
+    "avatar": "Photo de Profil",
+    "info": "Informations",
+    "fullName": "Nom Complet",
+    "emailAddress": "Adresse Email",
+    "logout": "Déconnexion"
+  },
+  "footer": {
+    "rights": "Tous droits réservés.",
+    "powered": "Propulsé par Crochetri"
   }
 }
