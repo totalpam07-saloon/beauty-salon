@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useI18n } from "@/components/i18n-provider";
-import { computeMinDeposit, Service, SalonSettings, Appointment } from "@/store/salon";
+import { computeMinDeposit, Service, SalonSettings, Appointment, Staff } from "@/store/salon";
 import { addAppointmentAction } from "@/app/actions";
-import { Upload, ArrowRight, CheckCircle2, ChevronDown, X, MessageCircle } from "lucide-react";
+import { Upload, ArrowRight, CheckCircle2, ChevronDown, X, MessageCircle, User } from "lucide-react";
 import { WeekCalendar } from "@/components/week-calendar";
 import Link from "next/link";
 import Image from "next/image";
@@ -29,13 +29,15 @@ interface ClientBookingFlowProps {
   services: Service[];
   settings: SalonSettings;
   appointments: Partial<Appointment>[];
+  staffList?: Staff[];
 }
 
-export default function ClientBookingFlow({ tenantId, domain, services, settings, appointments }: ClientBookingFlowProps) {
+export default function ClientBookingFlow({ tenantId, domain, services, settings, appointments, staffList = [] }: ClientBookingFlowProps) {
   const { t, language } = useI18n();
 
   const [step, setStep] = useState(1);
   const [selectedServiceId, setSelectedServiceId] = useState(services[0]?.id || "");
+  const [selectedStaffId, setSelectedStaffId] = useState<string>("any");
   const [detailsModalService, setDetailsModalService] = useState<typeof services[0] | null>(null);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -135,6 +137,7 @@ export default function ClientBookingFlow({ tenantId, domain, services, settings
         clientPhone: `${countryCode} ${phone}`,
         clientEmail: email,
         serviceId: selectedServiceId,
+        staffId: selectedStaffId,
         serviceName: selectedService.name,
         date,
         time,
@@ -278,6 +281,42 @@ export default function ClientBookingFlow({ tenantId, domain, services, settings
                 )
               )}
             </div>
+
+            {/* Staff Selector */}
+            {staffList.length > 0 && (
+              <div className="space-y-4">
+                <label className="block text-sm font-bold text-foreground/80 ml-2">{t("book.staffLabel")}</label>
+                <div className="flex overflow-x-auto pb-4 gap-3 no-scrollbar px-1">
+                  <div role="button" tabIndex={0} onClick={() => { setSelectedStaffId("any"); setDate(""); setTime(""); }}
+                    className={`flex-shrink-0 w-32 h-32 flex flex-col items-center justify-center rounded-2xl border-2 transition-all cursor-pointer ${selectedStaffId === "any" ? "border-primary bg-primary/5 ring-4 ring-primary/10 shadow-md" : "border-border hover:border-primary/50 bg-card shadow-sm"}`}>
+                    <User className={`w-8 h-8 mb-2 ${selectedStaffId === "any" ? "text-primary" : "text-foreground/40"}`} />
+                    <span className="font-bold text-sm">{t("book.anyStaff")}</span>
+                  </div>
+                  {staffList.map(staff => (
+                    <div key={staff.id} role="button" tabIndex={0} onClick={() => { setSelectedStaffId(staff.id); setDate(""); setTime(""); }}
+                      className={`flex-shrink-0 w-32 h-32 flex flex-col items-center justify-center rounded-2xl border-2 transition-all cursor-pointer relative overflow-hidden ${selectedStaffId === staff.id ? "border-primary bg-primary/5 ring-4 ring-primary/10 shadow-md" : "border-border hover:border-primary/50 bg-card shadow-sm"}`}>
+                      {staff.imageUrl ? (
+                        <>
+                          <Image src={staff.imageUrl} fill sizes="128px" className="object-cover opacity-60" alt={staff.name} />
+                          <div className="absolute inset-0 bg-black/20" />
+                          <span className="font-bold text-sm text-white z-10 drop-shadow-md text-center px-2">{staff.name}</span>
+                          {selectedStaffId === staff.id && (
+                            <div className="absolute top-2 right-2 bg-primary text-white rounded-full p-1 shadow-sm z-10">
+                              <CheckCircle2 size={12} />
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <User className={`w-8 h-8 mb-2 ${selectedStaffId === staff.id ? "text-primary" : "text-foreground/40"}`} />
+                          <span className="font-bold text-sm text-center px-2">{staff.name}</span>
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Week Calendar */}
             <div className="space-y-2">

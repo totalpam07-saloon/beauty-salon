@@ -68,11 +68,37 @@ export default async function HomePage(props: { params: Promise<{ domain: string
     createdAt: p.created_at
   }));
 
+  const rawReviews = data.reviews || [];
+  const reviews = rawReviews.map((r: any) => ({
+    id: r.id,
+    tenantId: r.tenant_id,
+    appointmentId: r.appointment_id,
+    rating: r.rating,
+    comment: r.comment,
+    imageUrl: r.image_url,
+    videoUrl: r.video_url,
+    isAnonymous: r.is_anonymous,
+    createdAt: r.created_at
+  }));
+
+  // We need the client name for non-anonymous reviews
+  // We can join this from appointments
+  const rawAppointments = data.appointments || [];
+  const reviewsWithClientNames = reviews.map((r: any) => {
+    const apt = rawAppointments.find((a: any) => a.id === r.appointmentId);
+    return {
+      ...r,
+      clientName: apt ? apt.client_name : "Client(e)",
+      serviceName: apt ? services.find((s: any) => s.id === apt.service_id)?.name : "Service"
+    };
+  });
+
   return (
     <ClientHome 
       services={services} 
       settings={settings} 
       portfolio={portfolio} 
+      reviews={reviewsWithClientNames}
     />
   );
 }

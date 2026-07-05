@@ -29,12 +29,18 @@ export async function getTenantData(id: string) {
   const { data: services } = await supabase.from("services").select("*").eq("tenant_id", id);
   const { data: appointments } = await supabase.from("appointments").select("*").eq("tenant_id", id);
   const { data: portfolio } = await supabase.from("portfolio").select("*").eq("tenant_id", id);
+  const { data: staff } = await supabase.from("staff").select("*").eq("tenant_id", id);
+  const { data: clients } = await supabase.from("clients").select("*").eq("tenant_id", id);
+  const { data: reviews } = await supabase.from("reviews").select("*").eq("tenant_id", id);
 
   return {
     ...tenant,
     salon_settings: settings || [],
     services: services || [],
     appointments: appointments || [],
-    portfolio: portfolio || []
+    portfolio: portfolio || [],
+    staff: staff || [],
+    clients: clients || [],
+    reviews: reviews || []
   };
 }

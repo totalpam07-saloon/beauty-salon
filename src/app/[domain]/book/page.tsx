@@ -67,6 +67,13 @@ export default async function BookPage(props: { params: Promise<{ domain: string
     status: a.status
   }));
 
+  const staff = (data.staff || []).map((s: any) => ({
+    id: s.id,
+    name: s.name,
+    role: s.role,
+    imageUrl: s.image_url
+  }));
+
   if (!settings) notFound();
 
   return (
@@ -75,7 +82,8 @@ export default async function BookPage(props: { params: Promise<{ domain: string
       domain={domain}
       services={services} 
       settings={settings} 
-      appointments={appointments} 
+      appointments={appointments}
+      staffList={staff}
     />
   );
 }

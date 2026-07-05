@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useI18n } from "@/components/i18n-provider";
 import { Service, SalonSettings, PortfolioPhoto } from "@/store/salon";
-import { Calendar, ChevronRight, Sparkles, Scissors, Smile, ImageIcon, Images, X, MessageCircle } from "lucide-react";
+import { Calendar, ChevronRight, Sparkles, Scissors, Smile, ImageIcon, Images, X, MessageCircle, Star, Play } from "lucide-react";
 import Link from "next/link";
 
 const icons = [
@@ -16,11 +16,13 @@ interface ClientHomeProps {
   services: Service[];
   settings: SalonSettings;
   portfolio: PortfolioPhoto[];
+  reviews?: any[];
 }
 
-export default function ClientHome({ services, settings, portfolio }: ClientHomeProps) {
+export default function ClientHome({ services, settings, portfolio, reviews = [] }: ClientHomeProps) {
   const { t } = useI18n();
   const [detailsModalService, setDetailsModalService] = useState<Service | null>(null);
+  const [fullScreenMedia, setFullScreenMedia] = useState<{url: string, type: 'image'|'video'} | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("Tous");
 
   const categories = ["Tous", ...new Set(services.map(s => s.category).filter(Boolean))] as string[];
@@ -155,6 +157,75 @@ export default function ClientHome({ services, settings, portfolio }: ClientHome
         </section>
       )}
 
+      {/* Reviews Section */}
+      {reviews.length > 0 && (
+        <section className="w-full bg-background border-t border-border py-12 md:py-20">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="text-3xl font-extrabold text-foreground mb-8 flex items-center justify-center gap-3 text-center">
+              <Star className="text-yellow-400 w-8 h-8 fill-yellow-400" />
+              {t("home.reviewsTitle")}
+            </h2>
+            <div className="flex items-start overflow-x-auto gap-6 pb-8 no-scrollbar snap-x snap-mandatory">
+              {reviews.map((review) => (
+                <div key={review.id} className="min-w-[300px] max-w-[350px] bg-card border border-border rounded-3xl p-6 shadow-sm snap-center shrink-0">
+                  <div className="flex gap-1 mb-4">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star key={star} size={18} className={review.rating >= star ? "fill-yellow-400 text-yellow-400" : "text-foreground/20"} />
+                    ))}
+                  </div>
+                  <p className="text-foreground/80 font-medium italic mb-6 line-clamp-4">
+                    "{review.comment}"
+                  </p>
+                  
+                  {/* Media Attachment */}
+                  {review.videoUrl ? (
+                    <div 
+                      className="mb-6 rounded-2xl overflow-hidden shadow-sm aspect-video bg-black relative cursor-pointer group"
+                      onClick={() => setFullScreenMedia({ url: review.videoUrl!, type: 'video' })}
+                    >
+                      <video 
+                        src={review.videoUrl} 
+                        className="w-full h-full object-cover opacity-80 group-hover:opacity-60 transition-opacity"
+                        muted
+                        playsInline
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 text-white shadow-lg">
+                          <Play fill="currentColor" size={20} className="ml-1" />
+                        </div>
+                      </div>
+                    </div>
+                  ) : review.imageUrl ? (
+                    <div 
+                      className="mb-6 rounded-2xl overflow-hidden shadow-sm aspect-video cursor-pointer group"
+                      onClick={() => setFullScreenMedia({ url: review.imageUrl!, type: 'image' })}
+                    >
+                      <img 
+                        src={review.imageUrl} 
+                        alt="Review media" 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                  ) : null}
+
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary font-bold">
+                      {review.isAnonymous ? "?" : review.clientName.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="font-bold text-foreground text-sm">
+                        {review.isAnonymous ? t("home.anonymous") : review.clientName}
+                      </p>
+                      <p className="text-xs text-foreground/50 font-medium">{t("home.service")}: {review.serviceName}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Details Modal */}
       {detailsModalService && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200" onClick={() => setDetailsModalService(null)}>
@@ -180,12 +251,12 @@ export default function ClientHome({ services, settings, portfolio }: ClientHome
                   {detailsModalService.description}
                 </div>
               ) : (
-                <p className="text-foreground/50 text-sm italic">Aucune description disponible.</p>
+                <p className="text-foreground/50 text-sm italic">{t("home.noDescription")}</p>
               )}
 
               <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="w-full sm:w-auto">
-                  <p className="text-xs font-bold text-foreground/50 uppercase tracking-wider mb-1">Durée & Prix</p>
+                  <p className="text-xs font-bold text-foreground/50 uppercase tracking-wider mb-1">{t("home.durationAndPrice")}</p>
                   <p className="text-sm font-extrabold text-foreground">{detailsModalService.duration} • <span className="text-primary text-xl">${detailsModalService.priceUSD}</span></p>
                 </div>
                 <div className="flex w-full sm:w-auto gap-3">
@@ -202,6 +273,41 @@ export default function ClientHome({ services, settings, portfolio }: ClientHome
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Fullscreen Media Modal */}
+      {fullScreenMedia && (
+        <div 
+          className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200"
+          onClick={() => setFullScreenMedia(null)}
+        >
+          <button 
+            onClick={() => setFullScreenMedia(null)} 
+            className="absolute top-4 right-4 md:top-8 md:right-8 bg-white/10 text-white rounded-full p-3 hover:bg-white/20 transition-colors z-10"
+          >
+            <X size={24} />
+          </button>
+          
+          <div 
+            className="w-full max-w-5xl max-h-[90vh] flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {fullScreenMedia.type === 'video' ? (
+              <video 
+                src={fullScreenMedia.url} 
+                controls 
+                autoPlay
+                className="w-full h-auto max-h-[90vh] rounded-lg shadow-2xl object-contain"
+              />
+            ) : (
+              <img 
+                src={fullScreenMedia.url} 
+                alt="Fullscreen media" 
+                className="max-w-full max-h-[90vh] rounded-lg shadow-2xl object-contain"
+              />
+            )}
           </div>
         </div>
       )}

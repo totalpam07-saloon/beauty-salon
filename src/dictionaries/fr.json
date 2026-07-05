@@ -7,7 +7,13 @@
     "portfolioPreview": "Notre Portfolio",
     "seeAll": "Voir tout le portfolio",
     "theme": "Thème",
-    "language": "Langue"
+    "language": "Langue",
+    "reviewsTitle": "Ce que disent nos clients",
+    "noReviews": "Aucun avis pour le moment.",
+    "anonymous": "Anonyme",
+    "service": "Prestation",
+    "noDescription": "Aucune description disponible.",
+    "durationAndPrice": "Durée & Prix"
   },
   "saas": {
     "heroTitle": "Lancez le site de votre salon en",
@@ -83,7 +89,9 @@
     "amountSent": "Montant envoyé",
     "successTitle": "Merci!",
     "successDesc": "Votre rendez-vous est en attente de vérification. Vous serez notifié dès que votre paiement sera confirmé.",
-    "returnHome": "Retour à l'accueil"
+    "returnHome": "Retour à l'accueil",
+    "staffLabel": "Choix du professionnel",
+    "anyStaff": "Peu importe"
   },
   "admin": {
     "navDashboard": "Tableau de Bord",
@@ -92,6 +100,8 @@
     "navAdminPanel": "Panneau Admin",
     "navManager": "Gestion du Salon",
     "navBack": "Retour au site",
+    "navClients": "Clients",
+    "navStaff": "Personnel",
     
     "dashTitle": "Tableau de Bord",
     "dashSub": "Bienvenue, gérez vos rendez-vous ici.",
@@ -164,7 +174,46 @@
     "info": "Informations",
     "fullName": "Nom Complet",
     "emailAddress": "Adresse Email",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "staffSub": "Gérez les membres de votre équipe.",
+    "newStaff": "Nouveau membre",
+    "roleSpec": "Rôle / Spécialité",
+    "staffPhotoHint": "Coller un lien URL ou téléverser depuis votre appareil.",
+    "staffAddBtn": "Ajouter",
+    "deleteStaffModalTitle": "Supprimer ce membre ?",
+    "deleteStaffModalMsg": "Êtes-vous sûr de vouloir supprimer ce membre de l'équipe ? Cette action est irréversible.",
+    "deleteBtn": "Supprimer",
+    "staffEdited": "Membre du personnel modifié",
+    "staffAdded": "Nouveau membre ajouté",
+    "staffDeleted": "Membre supprimé",
+    "clientsTitle": "Clients CRM",
+    "clientsSub": "Base de données de vos clients",
+    "totalVisits": "Visites",
+    "firstVisit": "Première",
+    "lastVisit": "Dernière",
+    "privateNotes": "Notes privées (visibles uniquement par vous)",
+    "noClients": "Aucun client dans la base de données.",
+    "saveNotesBtn": "Sauvegarder",
+    "notesSaved": "Notes sauvegardées !",
+    "quickActionsTitle": "Gestion du Salon"
+  },
+  "review": {
+    "leaveReview": "Laissez un avis",
+    "reviewOn": "Sur votre rendez-vous pour",
+    "onDate": "le",
+    "ratingLabel": "Votre Note",
+    "yourName": "Votre nom",
+    "yourComment": "Votre message",
+    "commentPlaceholder": "Qu'avez-vous pensé de votre prestation ?",
+    "addPhoto": "Ajouter une photo (Optionnel)",
+    "changePhoto": "Changer la photo",
+    "uploadPhoto": "Téléverser une photo du résultat",
+    "stayAnonymous": "Rester anonyme",
+    "anonymousDesc": "Votre nom ({name}) ne sera pas affiché publiquement.",
+    "submitBtn": "Publier l'avis",
+    "submitting": "Envoi...",
+    "successTitle": "Merci pour votre avis !",
+    "successMsg": "Votre retour est très précieux et nous aide à nous améliorer continuellement."
   },
   "footer": {
     "rights": "Tous droits réservés.",

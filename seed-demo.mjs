@@ -295,10 +295,12 @@ async function seed() {
 
   // ── STEP 5: Clear old data ─────────────────────────
   console.log("\nÉTAPE 5 ▸ Nettoyage des anciennes données démo...");
+  await supabase.from('reviews').delete().eq('tenant_id', tenantId);
+  await supabase.from('staff').delete().eq('tenant_id', tenantId);
   await supabase.from('appointments').delete().eq('tenant_id', tenantId);
   await supabase.from('services').delete().eq('tenant_id', tenantId);
   await supabase.from('portfolio').delete().eq('tenant_id', tenantId);
-  console.log("   ✅ Anciens rendez-vous, services et portfolio supprimés");
+  console.log("   ✅ Anciennes données supprimées");
 
   // ── STEP 6: Seed Services ──────────────────────────
   console.log("\nÉTAPE 6 ▸ Ajout de 6 Services avec images...");
@@ -428,9 +430,61 @@ async function seed() {
     },
   ].map(a => ({ ...a, tenant_id: tenantId }));
 
-  const { error: apptErr } = await supabase.from('appointments').insert(appointments);
+  const { data: insertedAppointments, error: apptErr } = await supabase.from('appointments').insert(appointments).select();
   if (apptErr) { console.error("   ❌ Échec de l'ajout des rendez-vous:", apptErr.message); process.exit(1); }
   console.log(`   ✅ ${appointments.length} rendez-vous ajoutés (3 en attente, 3 confirmés, 4 passés)`);
+
+  // ── STEP 9: Seed Staff ─────────────────────────────
+  console.log("\nÉTAPE 9 ▸ Ajout de l'équipe (Staff)...");
+  const staff = [
+    { name: "Isabella Laurent", role: "Propriétaire & Coloriste", image_url: AVATAR_URL, tenant_id: tenantId },
+    { name: "Sophie Jean", role: "Coiffeuse Visagiste", image_url: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop", tenant_id: tenantId },
+    { name: "Marc Olivier", role: "Spécialiste Tresses", image_url: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop", tenant_id: tenantId },
+  ];
+  const { error: staffErr } = await supabase.from('staff').insert(staff);
+  if (staffErr) { console.error("   ❌ Échec de l'ajout de l'équipe:", staffErr.message); process.exit(1); }
+  console.log(`   ✅ 3 membres d'équipe ajoutés`);
+
+  // ── STEP 10: Seed Reviews ──────────────────────────
+  console.log("\nÉTAPE 10 ▸ Ajout des avis (Reviews)...");
+  
+  // Assign reviews to some past appointments
+  const pastAppointments = insertedAppointments.filter(a => a.status === 'approved' && new Date(a.date) < today);
+  
+  if (pastAppointments.length >= 3) {
+    const reviews = [
+      {
+        tenant_id: tenantId,
+        appointment_id: pastAppointments[0].id,
+        rating: 5,
+        comment: "Prestation au top ! J'adore ma nouvelle coupe, le salon est magnifique et l'équipe très accueillante.",
+        is_anonymous: false,
+        image_url: "https://picsum.photos/600/400?random=1", 
+        video_url: null
+      },
+      {
+        tenant_id: tenantId,
+        appointment_id: pastAppointments[1].id,
+        rating: 4,
+        comment: "Très bon service, résultat à la hauteur de mes attentes. Je recommande vivement.",
+        is_anonymous: true,
+        image_url: null,
+        video_url: "https://www.w3schools.com/html/mov_bbb.mp4"
+      },
+      {
+        tenant_id: tenantId,
+        appointment_id: pastAppointments[2].id,
+        rating: 5,
+        comment: "Sèvis la te vrèman bon. Mwen renmen fason yo akeyi moun. M ap tounen ankò!",
+        is_anonymous: false,
+        image_url: null,
+        video_url: null
+      }
+    ];
+    const { error: revErr } = await supabase.from('reviews').insert(reviews);
+    if (revErr) { console.error("   ❌ Échec de l'ajout des avis:", revErr.message); process.exit(1); }
+    console.log(`   ✅ 3 avis clients ajoutés`);
+  }
 
   // ── DONE ───────────────────────────────────────────
   console.log("\n🎉 ═══════════════════════════════════════════");
@@ -444,6 +498,8 @@ async function seed() {
   console.log("\n  Services ajoutés   :  6 (avec images & descriptions)");
   console.log("  Photos Portfolio   :  9");
   console.log("  Rendez-vous        :  10 (en attente, confirmés, passés)");
+  console.log("  Membres d'équipe   :  3");
+  console.log("  Avis clients       :  2");
   console.log("  Réseaux sociaux    :  Instagram, Facebook, WhatsApp");
   console.log("  Paiements          :  MonCash, NatCash, Zelle");
   console.log("\n═══════════════════════════════════════════════\n");

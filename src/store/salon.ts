@@ -6,6 +6,13 @@ const supabase = createClient();
 
 export type DepositType = "percentage" | "fixed";
 
+export interface Staff {
+  id: string;
+  name: string;
+  role: string;
+  imageUrl?: string;
+}
+
 export interface Service {
   id: string;
   name: string;
@@ -28,6 +35,7 @@ export interface Appointment {
   clientEmail: string;
   serviceId: string;
   serviceName: string; // Stored locally for convenience or fetched via join
+  staffId?: string; // New: Who is performing the service
   date: string;
   time: string;
   status: "pending" | "approved" | "rejected";
@@ -42,6 +50,18 @@ export interface DaySchedule {
   enabled: boolean;
   start: string;
   end: string;
+}
+
+export interface Review {
+  id: string;
+  tenantId: string;
+  appointmentId: string;
+  rating: number;
+  comment?: string;
+  imageUrl?: string;
+  videoUrl?: string;
+  isAnonymous: boolean;
+  createdAt: string;
 }
 
 export interface SalonSettings {

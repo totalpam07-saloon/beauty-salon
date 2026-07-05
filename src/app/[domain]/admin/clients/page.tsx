@@ -38,9 +38,14 @@ export default async function ClientsPage(props: { params: Promise<{ domain: str
     createdAt: a.created_at
   }));
 
+  const clients = data.clients || [];
+
   return (
     <ClientClientsList 
+      tenantId={tenantId}
+      domain={domain}
       appointments={appointments}
+      dbClients={clients}
     />
   );
 }

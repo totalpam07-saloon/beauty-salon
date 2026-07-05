@@ -2,7 +2,7 @@
 
 import { Appointment } from "@/store/salon";
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, User, Phone, LayoutList, CalendarDays } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, User, Phone, LayoutList, CalendarDays, MessageCircle, Star } from "lucide-react";
 
 export default function ClientAgenda({ appointments }: { appointments: Appointment[] }) {
   
@@ -60,6 +60,21 @@ export default function ClientAgenda({ appointments }: { appointments: Appointme
   const selectedDayAppointments = approvedAppointments
     .filter(a => a.date === selectedDateStr)
     .sort((a, b) => a.time.localeCompare(b.time));
+
+  const generateWaLink = (apt: Appointment, date: Date) => {
+    const phone = apt.clientPhone?.replace(/[^0-9]/g, '');
+    const dateStr = date.toLocaleDateString("fr-FR", { weekday: 'long', day: 'numeric', month: 'long' });
+    const message = `Bonjour ${apt.clientName}, petit rappel pour votre rendez-vous de "${apt.serviceName}" le ${dateStr} à ${apt.time}. À très vite !`;
+    return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  };
+
+  const generateReviewLink = (apt: Appointment) => {
+    const phone = apt.clientPhone?.replace(/[^0-9]/g, '');
+    const rootDomain = window.location.origin; // Using origin since this is client-side
+    const reviewUrl = `${rootDomain}/review?apt=${apt.id}`;
+    const message = `Bonjour ${apt.clientName}, merci pour votre visite ! Pourriez-vous prendre 1 minute pour nous laisser un avis sur votre prestation ("${apt.serviceName}") ? Cliquez ici : ${reviewUrl}`;
+    return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  };
 
   return (
     <div className="space-y-6">
@@ -157,8 +172,16 @@ export default function ClientAgenda({ appointments }: { appointments: Appointme
                       <div className="font-bold text-foreground flex items-center gap-2 text-sm">
                         <User size={14} className="text-foreground/50" /> {apt.clientName}
                       </div>
-                      <div className="text-foreground/70 text-xs flex items-center gap-2 font-medium">
-                        <Phone size={14} className="text-foreground/50" /> {apt.clientPhone}
+                      <div className="flex justify-between items-center">
+                        <div className="text-foreground/70 text-xs flex items-center gap-2 font-medium">
+                          <Phone size={14} className="text-foreground/50" /> {apt.clientPhone}
+                        </div>
+                        <a href={generateWaLink(apt, selectedDate)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366]/20 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">
+                          <MessageCircle size={14} /> Rappel
+                        </a>
+                        <a href={generateReviewLink(apt)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 bg-primary/10 text-primary hover:bg-primary/20 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ml-2">
+                          <Star size={14} /> Avis
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -191,9 +214,19 @@ export default function ClientAgenda({ appointments }: { appointments: Appointme
                       <div className="text-xs text-foreground/40 font-medium italic mt-1">Aucun RDV</div>
                     ) : (
                       dayAppointments.map(apt => (
-                        <div key={apt.id} className="bg-secondary/50 border border-border rounded-xl px-3 py-2 flex items-center justify-between">
-                          <div className="font-bold text-primary text-xs">{apt.time}</div>
-                          <div className="text-xs font-bold truncate max-w-[120px] text-foreground/80">{apt.clientName}</div>
+                        <div key={apt.id} className="bg-secondary/50 border border-border rounded-xl px-3 py-2 flex items-center justify-between group">
+                          <div className="flex items-center gap-2 overflow-hidden">
+                            <div className="font-bold text-primary text-xs shrink-0">{apt.time}</div>
+                            <div className="text-xs font-bold truncate text-foreground/80">{apt.clientName}</div>
+                          </div>
+                          <div className="flex items-center gap-1 shrink-0">
+                            <a href={generateWaLink(apt, day)} target="_blank" rel="noopener noreferrer" className="text-[#25D366] hover:bg-[#25D366]/10 p-1 rounded-md transition-colors">
+                              <MessageCircle size={14} />
+                            </a>
+                            <a href={generateReviewLink(apt)} target="_blank" rel="noopener noreferrer" className="text-primary hover:bg-primary/10 p-1 rounded-md transition-colors">
+                              <Star size={14} />
+                            </a>
+                          </div>
                         </div>
                       ))
                     )}
@@ -240,8 +273,18 @@ export default function ClientAgenda({ appointments }: { appointments: Appointme
                         <div className="text-foreground/70 text-xs flex items-center gap-1.5 truncate mb-0.5">
                           <User size={12} /> {apt.clientName}
                         </div>
-                        <div className="text-foreground/50 text-[11px] flex items-center gap-1.5 mt-1 border-t border-border/50 pt-1">
-                          <Phone size={10} /> {apt.clientPhone}
+                        <div className="flex justify-between items-end mt-1 border-t border-border/50 pt-1">
+                          <div className="text-foreground/50 text-[11px] flex items-center gap-1.5">
+                            <Phone size={10} /> {apt.clientPhone}
+                          </div>
+                          <div className="flex gap-1">
+                            <a href={generateWaLink(apt, day)} target="_blank" rel="noopener noreferrer" title="Envoyer un rappel" className="text-[#25D366] hover:bg-[#25D366]/10 p-1 rounded-md transition-colors">
+                              <MessageCircle size={12} />
+                            </a>
+                            <a href={generateReviewLink(apt)} target="_blank" rel="noopener noreferrer" title="Demander un avis" className="text-primary hover:bg-primary/10 p-1 rounded-md transition-colors">
+                              <Star size={12} />
+                            </a>
+                          </div>
                         </div>
                       </div>
                     ))

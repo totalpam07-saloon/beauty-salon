@@ -108,7 +108,7 @@ export default function ClientAdminDashboard({ tenantId, domain, services, setti
 
       {/* Quick Actions (Mobile First) */}
       <div className="grid grid-cols-1 md:hidden gap-4">
-        <h2 className="text-xl font-extrabold text-foreground mt-4">Gestion du Salon</h2>
+        <h2 className="text-xl font-extrabold text-foreground mt-4">{t("admin.quickActionsTitle")}</h2>
         
         <Link href="/admin/services" className="bg-primary/10 border-2 border-primary/20 rounded-3xl p-5 flex items-center justify-between group hover:bg-primary/20 transition-colors">
           <div className="flex items-center gap-4">

@@ -110,6 +110,53 @@ export async function deleteServiceAction(tenantId: string, domain: string, id: 
   revalidatePath("/", "layout");
 }
 
+export async function addStaffAction(tenantId: string, domain: string, staff: any) {
+  const supabase = await verifyAuth(tenantId);
+  await supabase.from("staff").insert({
+    tenant_id: tenantId,
+    name: staff.name,
+    role: staff.role,
+    image_url: staff.imageUrl,
+  });
+  revalidatePath("/", "layout");
+}
+
+export async function updateStaffAction(tenantId: string, domain: string, id: string, updated: any) {
+  const supabase = await verifyAuth(tenantId);
+  const dbUpdate: any = {};
+  if (updated.name !== undefined) dbUpdate.name = updated.name;
+  if (updated.role !== undefined) dbUpdate.role = updated.role;
+  if (updated.imageUrl !== undefined) dbUpdate.image_url = updated.imageUrl;
+
+  if (Object.keys(dbUpdate).length > 0) {
+    await supabase.from("staff").update(dbUpdate).eq("id", id).eq("tenant_id", tenantId);
+  }
+  revalidatePath("/", "layout");
+}
+
+export async function deleteStaffAction(tenantId: string, domain: string, id: string) {
+  const supabase = await verifyAuth(tenantId);
+  await supabase.from("staff").delete().eq("id", id).eq("tenant_id", tenantId);
+  revalidatePath("/", "layout");
+}
+
+export async function updateClientNotesAction(tenantId: string, domain: string, phone: string, name: string, email: string, privateNotes: string) {
+  const supabase = await verifyAuth(tenantId);
+  // Upsert the client based on phone and tenant_id
+  await supabase.from("clients").upsert(
+    {
+      tenant_id: tenantId,
+      phone,
+      name,
+      email,
+      private_notes: privateNotes
+    },
+    { onConflict: 'tenant_id, phone' }
+  );
+  revalidatePath("/", "layout");
+}
+
+
 export async function addPortfolioPhotoAction(tenantId: string, domain: string, photo: any) {
   const supabase = await verifyAuth(tenantId);
   await supabase.from("portfolio").insert({
@@ -156,6 +203,7 @@ export async function addAppointmentAction(tenantId: string, domain: string, app
   await supabase.from("appointments").insert({
     tenant_id: tenantId,
     service_id: appointment.serviceId,
+    staff_id: appointment.staffId === "any" ? null : appointment.staffId,
     date: appointment.date,
     time: appointment.time,
     client_name: appointment.clientName,
@@ -182,5 +230,30 @@ export async function submitTenantPaymentAction(tenantId: string, domain: string
 export async function updateTenantDomainAction(tenantId: string, domain: string, newDomain: string | null) {
   const supabase = await verifyAuth(tenantId);
   await supabase.from("tenants").update({ domain: newDomain }).eq("id", tenantId);
+  revalidatePath("/", "layout");
+}
+
+// Public action - anyone with a magic link can leave a review
+export async function addReviewAction(tenantId: string, appointmentId: string, rating: number, comment: string, imageUrl: string, videoUrl: string, isAnonymous: boolean) {
+  const supabase = await createClient();
+  
+  const { data: existing } = await supabase.from("reviews").select("id").eq("appointment_id", appointmentId).single();
+  
+  const payload = {
+    tenant_id: tenantId,
+    appointment_id: appointmentId,
+    rating,
+    comment,
+    image_url: imageUrl || null,
+    video_url: videoUrl || null,
+    is_anonymous: isAnonymous
+  };
+
+  if (existing) {
+    await supabase.from("reviews").update(payload).eq("id", existing.id);
+  } else {
+    await supabase.from("reviews").insert(payload);
+  }
+  
   revalidatePath("/", "layout");
 }

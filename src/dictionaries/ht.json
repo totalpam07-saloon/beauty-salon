@@ -7,7 +7,13 @@
     "portfolioPreview": "Pòtfolyo Nou",
     "seeAll": "Wè tout pòtfolyo a",
     "theme": "Tèm",
-    "language": "Lang"
+    "language": "Lang",
+    "reviewsTitle": "Sa kliyan nou yo di",
+    "noReviews": "Pa gen okenn avi pou kounye a.",
+    "anonymous": "Anonim",
+    "service": "Sèvis",
+    "noDescription": "Pa gen deskripsyon disponib.",
+    "durationAndPrice": "Dire ak Pri"
   },
   "saas": {
     "heroTitle": "Lanse sit salon ou a an",
@@ -83,7 +89,9 @@
     "amountSent": "Kantite lajan ou voye a",
     "successTitle": "Mèsi!",
     "successDesc": "Rezèvasyon ou an ap tann verifikasyon. Nou pral fè ou konnen lè pèman an konfime.",
-    "returnHome": "Tounen Akèy"
+    "returnHome": "Tounen Akèy",
+    "staffLabel": "Chwa pwofesyonèl",
+    "anyStaff": "Nenpòt moun"
   },
   "admin": {
     "navDashboard": "Tablo de Bò",
@@ -92,6 +100,8 @@
     "navAdminPanel": "Pano Admin",
     "navManager": "Jesyon Salon",
     "navBack": "Tounen sou sit la",
+    "navClients": "Kliyan",
+    "navStaff": "Estaf",
     
     "dashTitle": "Tablo de Bò",
     "dashSub": "Byenveni, jere rezèvasyon ou yo isit la.",
@@ -164,7 +174,46 @@
     "info": "Enfòmasyon",
     "fullName": "Non Konplè",
     "emailAddress": "Imèl",
-    "logout": "Dekonekte"
+    "logout": "Dekonekte",
+    "staffSub": "Jere manm ekip ou yo.",
+    "newStaff": "Nouvo manm",
+    "roleSpec": "Wòl / Espesyalite",
+    "staffPhotoHint": "Kole yon lyen URL oswa voye soti nan telefòn ou.",
+    "staffAddBtn": "Ajoute",
+    "deleteStaffModalTitle": "Efase manm sa a ?",
+    "deleteStaffModalMsg": "Èske ou sèten ou vle efase manm sa a ? Aksyon sa paka tounen dèyè.",
+    "deleteBtn": "Efase",
+    "staffEdited": "Manm estaf la modifye",
+    "staffAdded": "Nouvo manm ajoute",
+    "staffDeleted": "Manm efase",
+    "clientsTitle": "Kliyan CRM",
+    "clientsSub": "Baz done kliyan ou yo",
+    "totalVisits": "Vizit",
+    "firstVisit": "Premye",
+    "lastVisit": "Dènye",
+    "privateNotes": "Nòt prive (ou sèlman ki ka wè yo)",
+    "noClients": "Pa gen kliyan nan baz done a.",
+    "saveNotesBtn": "Sove",
+    "notesSaved": "Nòt yo anrejistre !",
+    "quickActionsTitle": "Jesyon Salon"
+  },
+  "review": {
+    "leaveReview": "Kite yon avi",
+    "reviewOn": "Sou rezèvasyon ou a pou",
+    "onDate": "nan dat",
+    "ratingLabel": "Nòt ou",
+    "yourName": "Non ou",
+    "yourComment": "Mesaj ou",
+    "commentPlaceholder": "Kijan ou te jwenn sèvis la ?",
+    "addPhoto": "Ajoute yon foto (Opsyonèl)",
+    "changePhoto": "Chanje foto a",
+    "uploadPhoto": "Voye yon foto rezilta a",
+    "stayAnonymous": "Rete anonim",
+    "anonymousDesc": "Non ou ({name}) pap parèt devan tout moun.",
+    "submitBtn": "Pibliye avi a",
+    "submitting": "Ap voye...",
+    "successTitle": "Mèsi pou avi ou an !",
+    "successMsg": "Fidbak ou a enpòtan anpil epi li ede nou amelyore nou."
   },
   "footer": {
     "rights": "Tout dwa rezève.",
