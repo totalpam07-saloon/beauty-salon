@@ -263,7 +263,7 @@ export default function TemplateLuxe({ services, settings, portfolio, reviews = 
               <div className="border-t border-zinc-800 pt-8 mt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div className="w-full sm:w-auto text-center sm:text-left">
                   <p className="text-xs font-light text-zinc-500 uppercase tracking-widest mb-2">{t("home.durationAndPrice")}</p>
-                  <p className="text-sm font-light tracking-widest text-zinc-300">{detailsModalService.duration} <span className="mx-2 text-zinc-700">|</span> <span className="text-primary text-2xl font-serif">${detailsModalService.priceUSD}</span></p>
+                  <p className="text-sm font-light tracking-widest text-zinc-300">{detailsModalService.duration} <span className="mx-2 text-zinc-700">|</span> <span className="text-primary text-2xl font-serif">${detailsModalService.priceUSD} <span className="text-sm opacity-70 ml-2 font-bold whitespace-nowrap">/ {detailsModalService.priceHTG.toLocaleString()} HTG</span></span></p>
                 </div>
                 <div className="flex w-full sm:w-auto gap-4 flex-col sm:flex-row">
                   {settings?.whatsappVisibility === "inline" && settings?.whatsappNumber && (

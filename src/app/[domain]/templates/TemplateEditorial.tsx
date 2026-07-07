@@ -246,7 +246,7 @@ export default function TemplateEditorial({ services, settings, portfolio, revie
               <div className="border-t border-black pt-8 flex flex-col sm:flex-row items-center justify-between gap-8">
                 <div className="w-full sm:w-auto">
                   <p className="text-xs font-serif text-black/50 uppercase tracking-widest mb-2">{t("home.durationAndPrice")}</p>
-                  <p className="text-lg tracking-widest text-black">{detailsModalService.duration} <span className="mx-4 text-black/20">|</span> <span className="text-3xl font-serif">${detailsModalService.priceUSD}</span></p>
+                  <p className="text-lg tracking-widest text-black">{detailsModalService.duration} <span className="mx-4 text-black/20">|</span> <span className="text-3xl font-serif">${detailsModalService.priceUSD} <span className="text-sm opacity-70 ml-2 font-bold whitespace-nowrap">/ {detailsModalService.priceHTG.toLocaleString()} HTG</span></span></p>
                 </div>
                 <div className="flex w-full sm:w-auto gap-4 flex-col sm:flex-row">
                   {settings?.whatsappVisibility === "inline" && settings?.whatsappNumber && (

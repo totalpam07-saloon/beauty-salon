@@ -234,7 +234,7 @@ export default function TemplateSpa({ services, settings, portfolio, reviews = [
 
               <div className="border-t border-[#F9F6F0] pt-8 mt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div className="text-center sm:text-left">
-                  <p className="text-lg font-medium text-[#3D372F]">${detailsModalService.priceUSD} <span className="text-sm font-light text-[#7A7265] ml-2">({detailsModalService.duration})</span></p>
+                  <p className="text-lg font-medium text-[#3D372F]">${detailsModalService.priceUSD} <span className="text-sm opacity-70 ml-2 font-bold whitespace-nowrap">/ {detailsModalService.priceHTG.toLocaleString()} HTG</span> <span className="text-sm font-light text-[#7A7265] ml-2">({detailsModalService.duration})</span></p>
                 </div>
                 <div className="flex w-full sm:w-auto gap-3 flex-col sm:flex-row">
                   {settings?.whatsappVisibility === "inline" && settings?.whatsappNumber && (

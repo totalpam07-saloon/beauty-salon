@@ -277,7 +277,7 @@ export default function TemplateRetro({ services, settings, portfolio, reviews, 
                   <p className="text-sm font-black text-[#FF8A5B] uppercase tracking-widest mb-2">{t("home.durationAndPrice")}</p>
                   <p className="text-3xl font-black text-[#4A3B2C] flex justify-center items-center gap-3">
                     {detailsModalService.duration}
-                    <span className="bg-[#FFD166] px-3 py-1 rounded-xl rotate-3">${detailsModalService.priceUSD}</span>
+                    <span className="bg-[#FFD166] px-3 py-1 rounded-xl rotate-3">${detailsModalService.priceUSD} <span className="text-sm opacity-70 ml-2 font-bold whitespace-nowrap">/ {detailsModalService.priceHTG.toLocaleString()} HTG</span></span>
                   </p>
                 </div>
                 <div className="flex w-full sm:w-auto gap-4 flex-col">

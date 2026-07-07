@@ -146,13 +146,21 @@ export default function TemplatePlayful({ services, settings, portfolio, reviews
                     <span className="text-xl font-black text-slate-800">${service.priceUSD}</span>
                     <span className="text-xs font-bold text-slate-500">{service.priceHTG.toLocaleString()} HTG</span>
                   </div>
-                  <Link 
-                    href={`/book?service=${service.id}`} 
-                    onClick={(e) => e.stopPropagation()}
-                    className="bg-slate-100 hover:bg-primary hover:text-white text-slate-800 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm"
-                  >
-                    <ChevronRight size={20} className="ml-0.5" />
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); setDetailsModalService(service); }}
+                      className="text-xs font-bold text-primary bg-primary/10 hover:bg-primary/20 px-4 py-2 rounded-full transition-colors"
+                    >
+                      {t("home.details")}
+                    </button>
+                    <Link 
+                      href={`/book?service=${service.id}`} 
+                      onClick={(e) => e.stopPropagation()}
+                      className="bg-slate-100 hover:bg-primary hover:text-white text-slate-800 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm"
+                    >
+                      <ChevronRight size={20} className="ml-0.5" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -304,7 +312,7 @@ export default function TemplatePlayful({ services, settings, portfolio, reviews
                 <div className="text-center sm:text-left">
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{t("home.durationAndPrice")}</p>
                   <p className="text-xl font-black text-slate-800 flex items-center gap-2">
-                    ${detailsModalService.priceUSD} 
+                    ${detailsModalService.priceUSD} <span className="text-sm opacity-70 ml-2 font-bold whitespace-nowrap">/ {detailsModalService.priceHTG.toLocaleString()} HTG</span> 
                     <span className="text-sm font-medium text-slate-500 bg-white px-3 py-1 rounded-full shadow-sm">
                       {detailsModalService.duration}
                     </span>

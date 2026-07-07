@@ -251,7 +251,7 @@ export default function TemplateClassic({ services, settings, portfolio, reviews
               <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="w-full sm:w-auto">
                   <p className="text-xs font-bold text-foreground/50 uppercase tracking-wider mb-1">{t("home.durationAndPrice")}</p>
-                  <p className="text-sm font-extrabold text-foreground">{detailsModalService.duration} • <span className="text-primary text-xl">${detailsModalService.priceUSD}</span></p>
+                  <p className="text-sm font-extrabold text-foreground">{detailsModalService.duration} • <span className="text-primary text-xl">${detailsModalService.priceUSD} <span className="text-sm opacity-70 ml-2 font-bold whitespace-nowrap">/ {detailsModalService.priceHTG.toLocaleString()} HTG</span></span></p>
                 </div>
                 <div className="flex w-full sm:w-auto gap-3">
                   {settings?.whatsappVisibility === "inline" && settings?.whatsappNumber && (

@@ -52,6 +52,7 @@ export default async function ReviewPage(props: { params: Promise<{ domain: stri
       serviceName={service?.name || "Service"}
       date={appointment.date}
       existingReview={existingReview}
+      settings={data.settings}
     />
   );
 }

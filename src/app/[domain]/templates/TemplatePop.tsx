@@ -268,7 +268,7 @@ export default function TemplatePop({ services, settings, portfolio, reviews = [
                   <p className="text-sm font-black text-black/60 uppercase tracking-wider mb-1">{t("home.durationAndPrice")}</p>
                   <p className="text-xl font-black text-black flex items-center gap-3">
                     {detailsModalService.duration}
-                    <span className="bg-[#E5FF00] border-2 border-black rounded-lg px-2 py-0.5 text-2xl rotate-2">${detailsModalService.priceUSD}</span>
+                    <span className="bg-[#E5FF00] border-2 border-black rounded-lg px-2 py-0.5 text-2xl rotate-2">${detailsModalService.priceUSD} <span className="text-sm opacity-70 ml-2 font-bold whitespace-nowrap">/ {detailsModalService.priceHTG.toLocaleString()} HTG</span></span>
                   </p>
                 </div>
                 <div className="flex w-full sm:w-auto gap-4 flex-col">
