@@ -24,9 +24,44 @@ export function TabAppearance({
 
   return (
     <div className="space-y-8">
+      {/* Template Selection */}
       <div className="space-y-4">
-        <p className="text-sm font-extrabold text-foreground/80 border-b border-border pb-2">Couleurs du Site Web</p>
-        <p className="text-xs text-foreground/60 mb-4">Choisissez les couleurs de la page de réservation visible par vos clients.</p>
+        <p className="text-sm font-extrabold text-foreground/80 border-b border-border pb-2">Modèle de site (Template)</p>
+        <p className="text-xs text-foreground/60 mb-4">Choisissez la structure et le design de votre site de réservation.</p>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {[
+            { id: "classic", name: "📱 Classique", desc: "Design standard et épuré" },
+            { id: "luxe", name: "✨ Midnight Luxe", desc: "Sombre, élégant, fort contraste" },
+            { id: "spa", name: "🌿 Spa Minimaliste", desc: "Aéré, doux, tons pastel" },
+            { id: "pop", name: "🎨 Pop Vibrant", desc: "Audacieux, brutaliste, Gen-Z" },
+            { id: "editorial", name: "📰 Éditorial", desc: "Haute couture, noir & blanc" },
+            { id: "playful", name: "🫧 Playful", desc: "Doux, très coloré, effet verre (iOS)" },
+            { id: "retro", name: "🌻 Rétro Pop", desc: "Années 70, chaleureux et original" },
+          ].map((template) => {
+            const isSelected = (form.templateId || 'classic') === template.id;
+            return (
+              <button
+                key={template.id}
+                onClick={() => setForm({ ...form, templateId: template.id })}
+                className={`relative flex flex-col items-start p-4 rounded-2xl border-2 transition-all duration-200 text-left ${
+                  isSelected ? "border-primary bg-primary/5" : "border-border hover:border-primary/50 bg-background"
+                }`}
+              >
+                <div className="flex items-center justify-between w-full mb-1">
+                  <span className={`font-bold ${isSelected ? "text-primary" : "text-foreground"}`}>{template.name}</span>
+                  {isSelected && <Check className="text-primary" size={20} />}
+                </div>
+                <span className="text-xs text-foreground/60">{template.desc}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <p className="text-sm font-extrabold text-foreground/80 border-b border-border pb-2">Couleur d'accent (Thème)</p>
+        <p className="text-xs text-foreground/60 mb-4">Choisissez la couleur principale pour les boutons et icônes (s'applique à tous les modèles).</p>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {themes.map((theme) => {

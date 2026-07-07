@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Star, Upload, CheckCircle2 } from "lucide-react";
+import { Star, Upload, CheckCircle2, X } from "lucide-react";
 import { addReviewAction } from "@/app/actions";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
@@ -26,13 +26,17 @@ export default function ClientReviewForm({
   const [rating, setRating] = useState(existingReview?.rating || 5);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState(existingReview?.comment || "");
-  const [isAnonymous, setIsAnonymous] = useState(existingReview?.isAnonymous || false);
-  const [fileToUpload, setFileToUpload] = useState<File | null>(null);
+  const [isAnonymous, setIsAnonymous] = useState(existingReview?.is_anonymous || false);
+  const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
   
   // Initialize preview with existing media
-  const initialPreview = existingReview?.videoUrl || existingReview?.imageUrl || "";
-  const [filePreview, setFilePreview] = useState(initialPreview);
-  const [previewIsVideo, setPreviewIsVideo] = useState<boolean>(!!existingReview?.videoUrl);
+  const initialMedia = existingReview?.media || (
+    existingReview?.image_url ? [{id: crypto.randomUUID(), url: existingReview.image_url, type: 'image', likes: 0}] : 
+    existingReview?.video_url ? [{id: crypto.randomUUID(), url: existingReview.video_url, type: 'video', likes: 0}] : 
+    []
+  );
+  const [existingMedia, setExistingMedia] = useState<{id: string, url: string, type: 'image' | 'video', likes: number}[]>(initialMedia);
+  const [previewUrls, setPreviewUrls] = useState<{url: string, type: 'image' | 'video'}[]>([]);
   
   const [isPending, startTransition] = useTransition();
   const [submitted, setSubmitted] = useState(false);
@@ -44,35 +48,32 @@ export default function ClientReviewForm({
     e.preventDefault();
     startTransition(async () => {
       try {
-        let imageUrl = existingReview?.imageUrl || "";
-        let videoUrl = existingReview?.videoUrl || "";
+        let mediaArray = [...existingMedia];
 
-        if (fileToUpload) {
-          const fileExt = fileToUpload.name.split('.').pop();
-          const isVideo = fileToUpload.type.startsWith('video/');
-          const uniqueFileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-          const filePath = `reviews/${uniqueFileName}`;
+        if (filesToUpload.length > 0) {
+          const uploadedMedia = await Promise.all(filesToUpload.map(async (file) => {
+            const fileExt = file.name.split('.').pop();
+            const isVideo = file.type.startsWith('video/');
+            const uniqueFileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+            const filePath = `reviews/${uniqueFileName}`;
 
-          const { error: uploadError } = await supabase.storage
-            .from('receipts') // we can reuse the receipts bucket since it's public
-            .upload(filePath, fileToUpload);
+            const { error: uploadError } = await supabase.storage
+              .from('receipts') // we can reuse the receipts bucket since it's public
+              .upload(filePath, file);
 
-          if (!uploadError) {
-            const { data: { publicUrl } } = supabase.storage
-              .from('receipts')
-              .getPublicUrl(filePath);
-            
-            if (isVideo) {
-              videoUrl = publicUrl;
-              imageUrl = ""; // Clear image if replaced by video
-            } else {
-              imageUrl = publicUrl;
-              videoUrl = ""; // Clear video if replaced by image
+            if (!uploadError) {
+              const { data: { publicUrl } } = supabase.storage
+                .from('receipts')
+                .getPublicUrl(filePath);
+              return { id: crypto.randomUUID(), url: publicUrl, type: (isVideo ? 'video' : 'image') as 'video' | 'image', likes: 0 };
             }
-          }
+            return null;
+          }));
+          
+          mediaArray = [...mediaArray, ...(uploadedMedia.filter(m => m !== null) as {id: string, url: string, type: 'image'|'video', likes: number}[])];
         }
 
-        await addReviewAction(tenantId, appointmentId, rating, comment, imageUrl, videoUrl, isAnonymous);
+        await addReviewAction(tenantId, appointmentId, rating, comment, mediaArray, isAnonymous);
         setSubmitted(true);
       } catch (err) {
         console.error(err);
@@ -159,35 +160,71 @@ export default function ClientReviewForm({
         </div>
 
         {/* Photo Upload */}
-        <div className="space-y-2">
-          <label className="block text-sm font-bold text-foreground/80 ml-2">{t("review.addPhoto")}</label>
-          <label className="relative flex flex-col items-center justify-center w-full min-h-[120px] py-6 border-2 border-dashed border-primary/50 rounded-2xl cursor-pointer hover:bg-primary/5 transition-colors bg-background overflow-hidden group">
-            {filePreview ? (
-              <>
-                {previewIsVideo ? (
-                  <video src={filePreview} className="absolute inset-0 w-full h-full object-cover opacity-80" />
+        <div className="mb-8">
+          <label className="block font-bold text-foreground mb-4">{t("review.addPhoto")}</label>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
+            {/* Existing Media */}
+            {existingMedia.map((media, idx) => (
+              <div key={`existing-${idx}`} className="relative aspect-square rounded-2xl overflow-hidden bg-secondary/50 group border border-border">
+                <button 
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setExistingMedia(existingMedia.filter((_, i) => i !== idx));
+                  }}
+                  className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1.5 z-10 opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <X size={16} />
+                </button>
+                {media.type === 'video' ? (
+                  <video src={media.url} className="w-full h-full object-cover" />
                 ) : (
-                  <Image src={filePreview} alt="Preview" fill sizes="(max-width: 640px) 100vw, 400px" className="object-cover opacity-80" />
+                  <img src={media.url} alt={`Existing media ${idx}`} className="w-full h-full object-cover" />
                 )}
-                <div className="z-10 bg-black/60 px-4 py-2 rounded-xl backdrop-blur-sm">
-                  <span className="font-bold text-xs text-white">{t("review.changePhoto")}</span>
-                </div>
-              </>
-            ) : (
-              <>
-                <Upload className="text-primary w-6 h-6 mb-2" />
-                <span className="font-bold text-sm text-foreground/60">{t("review.uploadPhoto")}</span>
-              </>
-            )}
-            <input type="file" className="hidden" accept="image/*,video/*" onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                setFileToUpload(file);
-                setFilePreview(URL.createObjectURL(file));
-                setPreviewIsVideo(file.type.startsWith('video/'));
-              }
-            }} />
-          </label>
+              </div>
+            ))}
+
+            {/* New Upload Previews */}
+            {previewUrls.map((media, idx) => (
+              <div key={`new-${idx}`} className="relative aspect-square rounded-2xl overflow-hidden bg-secondary/50 group border border-primary/20">
+                <button 
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setPreviewUrls(previewUrls.filter((_, i) => i !== idx));
+                    setFilesToUpload(filesToUpload.filter((_, i) => i !== idx));
+                  }}
+                  className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1.5 z-10 opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <X size={16} />
+                </button>
+                {media.type === 'video' ? (
+                  <video src={media.url} className="w-full h-full object-cover" />
+                ) : (
+                  <img src={media.url} alt={`New media ${idx}`} className="w-full h-full object-cover" />
+                )}
+              </div>
+            ))}
+
+            {/* Upload Button */}
+            <label className="relative flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-primary/50 rounded-2xl cursor-pointer hover:bg-primary/5 transition-colors bg-background">
+              <Upload className="w-8 h-8 text-primary mb-2" />
+              <span className="text-sm font-medium text-foreground/70">Ajouter</span>
+              <input type="file" accept="image/*,video/*" multiple className="hidden" onChange={(e) => {
+                const files = Array.from(e.target.files || []);
+                if (files.length > 0) {
+                  setFilesToUpload([...filesToUpload, ...files]);
+                  const newPreviews = files.map(file => ({
+                    url: URL.createObjectURL(file),
+                    type: file.type.startsWith('video/') ? 'video' : 'image'
+                  } as const));
+                  setPreviewUrls([...previewUrls, ...newPreviews]);
+                }
+              }} />
+            </label>
+          </div>
+          <p className="text-xs text-foreground/50">{t("review.photoHint")}</p>
         </div>
 
         {/* Anonymous Toggle */}

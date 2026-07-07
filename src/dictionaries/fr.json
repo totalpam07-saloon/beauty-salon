@@ -13,7 +13,18 @@
     "anonymous": "Anonyme",
     "service": "Prestation",
     "noDescription": "Aucune description disponible.",
-    "durationAndPrice": "Durée & Prix"
+    "durationAndPrice": "Durée & Prix",
+    "details": "Détails",
+    "book": "Réserver",
+    "inquire": "Poser une question",
+    "collection": "Collection 01",
+    "spaServicesTitle": "Soins & Traitements",
+    "spaPortfolioTitle": "Nos Réalisations",
+    "spaReviewsTitle": "Témoignages",
+    "luxeServicesTitle": "Nos Services",
+    "luxePortfolioTitle": "Notre Galerie",
+    "luxeReviewsTitle": "Ce Que Disent Nos Clients",
+    "editorialTitle": "Éditorial"
   },
   "saas": {
     "heroTitle": "Lancez le site de votre salon en",
@@ -102,6 +113,7 @@
     "navBack": "Retour au site",
     "navClients": "Clients",
     "navStaff": "Personnel",
+    "saved": "Paramètres sauvegardés avec succès",
     
     "dashTitle": "Tableau de Bord",
     "dashSub": "Bienvenue, gérez vos rendez-vous ici.",

@@ -428,6 +428,56 @@ async function seed() {
       status: "approved",
       deposit_receipt_url: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
     },
+    {
+      client_name: CLIENTS[2].name,
+      client_phone: CLIENTS[2].phone,
+      client_email: CLIENTS[2].email,
+      service_id: insertedServices[1].id,
+      date: formatDate(addDays(today, -12)),
+      time: "11:00",
+      status: "approved",
+      deposit_receipt_url: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
+    },
+    {
+      client_name: CLIENTS[4].name,
+      client_phone: CLIENTS[4].phone,
+      client_email: CLIENTS[4].email,
+      service_id: insertedServices[3].id,
+      date: formatDate(addDays(today, -15)),
+      time: "13:30",
+      status: "approved",
+      deposit_receipt_url: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
+    },
+    {
+      client_name: CLIENTS[0].name,
+      client_phone: CLIENTS[0].phone,
+      client_email: CLIENTS[0].email,
+      service_id: insertedServices[0].id,
+      date: formatDate(addDays(today, -20)),
+      time: "15:00",
+      status: "approved",
+      deposit_receipt_url: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
+    },
+    {
+      client_name: CLIENTS[5].name,
+      client_phone: CLIENTS[5].phone,
+      client_email: CLIENTS[5].email,
+      service_id: insertedServices[2].id,
+      date: formatDate(addDays(today, -25)),
+      time: "10:30",
+      status: "approved",
+      deposit_receipt_url: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
+    },
+    {
+      client_name: CLIENTS[6].name,
+      client_phone: CLIENTS[6].phone,
+      client_email: CLIENTS[6].email,
+      service_id: insertedServices[4].id,
+      date: formatDate(addDays(today, -30)),
+      time: "09:00",
+      status: "approved",
+      deposit_receipt_url: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
+    },
   ].map(a => ({ ...a, tenant_id: tenantId }));
 
   const { data: insertedAppointments, error: apptErr } = await supabase.from('appointments').insert(appointments).select();
@@ -451,7 +501,7 @@ async function seed() {
   // Assign reviews to some past appointments
   const pastAppointments = insertedAppointments.filter(a => a.status === 'approved' && new Date(a.date) < today);
   
-  if (pastAppointments.length >= 3) {
+  if (pastAppointments.length >= 6) {
     const reviews = [
       {
         tenant_id: tenantId,
@@ -459,8 +509,11 @@ async function seed() {
         rating: 5,
         comment: "Prestation au top ! J'adore ma nouvelle coupe, le salon est magnifique et l'équipe très accueillante.",
         is_anonymous: false,
-        image_url: "https://picsum.photos/600/400?random=1", 
-        video_url: null
+        likes_count: 0,
+        media: [
+          { id: crypto.randomUUID(), url: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=800&fit=crop", type: 'image', likes: 14 },
+          { id: crypto.randomUUID(), url: "https://images.unsplash.com/photo-1521590832167-7bfcbaa6362d?w=600&h=800&fit=crop", type: 'image', likes: 3 }
+        ]
       },
       {
         tenant_id: tenantId,
@@ -468,22 +521,60 @@ async function seed() {
         rating: 4,
         comment: "Très bon service, résultat à la hauteur de mes attentes. Je recommande vivement.",
         is_anonymous: true,
-        image_url: null,
-        video_url: "https://www.w3schools.com/html/mov_bbb.mp4"
+        likes_count: 0,
+        media: [
+          { id: crypto.randomUUID(), url: "https://www.w3schools.com/html/mov_bbb.mp4", type: 'video', likes: 5 },
+          { id: crypto.randomUUID(), url: "https://images.unsplash.com/photo-1595476108010-b4d1f10a5146?w=600&h=800&fit=crop", type: 'image', likes: 0 }
+        ]
       },
       {
         tenant_id: tenantId,
         appointment_id: pastAppointments[2].id,
         rating: 5,
-        comment: "Sèvis la te vrèman bon. Mwen renmen fason yo akeyi moun. M ap tounen ankò!",
+        comment: "Sèvis la te vrèman bon. Mwen renmen fason yo akeyi moun. M ap tounen ankò! Bèl ti rezilta.",
         is_anonymous: false,
-        image_url: null,
-        video_url: null
+        likes_count: 0,
+        media: [
+          { id: crypto.randomUUID(), url: "https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=600&h=800&fit=crop", type: 'image', likes: 42 },
+          { id: crypto.randomUUID(), url: "https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=600&h=800&fit=crop", type: 'image', likes: 12 },
+          { id: crypto.randomUUID(), url: "https://images.unsplash.com/photo-1516975080661-4606f3972eb0?w=600&h=800&fit=crop", type: 'image', likes: 27 }
+        ]
+      },
+      {
+        tenant_id: tenantId,
+        appointment_id: pastAppointments[3].id,
+        rating: 5,
+        comment: "Just perfect! Exactly what I asked for.",
+        is_anonymous: false,
+        likes_count: 0,
+        media: [
+          { id: crypto.randomUUID(), url: "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600&h=800&fit=crop", type: 'image', likes: 8 }
+        ]
+      },
+      {
+        tenant_id: tenantId,
+        appointment_id: pastAppointments[4].id,
+        rating: 5,
+        comment: "Magnifique couleur, je suis tellement contente !",
+        is_anonymous: false,
+        likes_count: 0,
+        media: [
+          { id: crypto.randomUUID(), url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4", type: 'video', likes: 22 }
+        ]
+      },
+      {
+        tenant_id: tenantId,
+        appointment_id: pastAppointments[5].id,
+        rating: 3,
+        comment: "Service correct, mais l'attente était un peu longue. La coiffure est bien cependant.",
+        is_anonymous: true,
+        likes_count: 1,
+        media: []
       }
     ];
     const { error: revErr } = await supabase.from('reviews').insert(reviews);
     if (revErr) { console.error("   ❌ Échec de l'ajout des avis:", revErr.message); process.exit(1); }
-    console.log(`   ✅ 3 avis clients ajoutés`);
+    console.log(`   ✅ 6 avis clients ajoutés avec images et vidéos multiples`);
   }
 
   // ── DONE ───────────────────────────────────────────

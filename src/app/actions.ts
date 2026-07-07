@@ -55,6 +55,7 @@ export async function updateSettingsAction(tenantId: string, domain: string, new
     whatsapp_number: newSettings.whatsappNumber,
     address: newSettings.address,
     whatsapp_visibility: newSettings.whatsappVisibility,
+    template_id: newSettings.templateId,
   }).eq("tenant_id", tenantId);
 
   revalidatePath("/", "layout");
@@ -234,7 +235,14 @@ export async function updateTenantDomainAction(tenantId: string, domain: string,
 }
 
 // Public action - anyone with a magic link can leave a review
-export async function addReviewAction(tenantId: string, appointmentId: string, rating: number, comment: string, imageUrl: string, videoUrl: string, isAnonymous: boolean) {
+export async function addReviewAction(
+  tenantId: string, 
+  appointmentId: string, 
+  rating: number, 
+  comment: string, 
+  media: { url: string; type: 'image' | 'video' }[], 
+  isAnonymous: boolean
+) {
   const supabase = await createClient();
   
   const { data: existing } = await supabase.from("reviews").select("id").eq("appointment_id", appointmentId).single();
@@ -244,8 +252,7 @@ export async function addReviewAction(tenantId: string, appointmentId: string, r
     appointment_id: appointmentId,
     rating,
     comment,
-    image_url: imageUrl || null,
-    video_url: videoUrl || null,
+    media,
     is_anonymous: isAnonymous
   };
 
@@ -256,4 +263,37 @@ export async function addReviewAction(tenantId: string, appointmentId: string, r
   }
   
   revalidatePath("/", "layout");
+}
+
+export async function likeMediaAction(reviewId: string, mediaId: string) {
+  const supabase = await createClient();
+  
+  const { data: review } = await supabase.from("reviews").select("media").eq("id", reviewId).single();
+  if (review && review.media && Array.isArray(review.media)) {
+    const updatedMedia = review.media.map((m: any) => {
+      if (m.id === mediaId) {
+        return { ...m, likes: (m.likes || 0) + 1 };
+      }
+      return m;
+    });
+    await supabase.from("reviews").update({ media: updatedMedia }).eq("id", reviewId);
+    revalidatePath("/", "layout");
+  }
+}
+
+export async function unlikeMediaAction(reviewId: string, mediaId: string) {
+  const supabase = await createClient();
+  
+  const { data: review } = await supabase.from("reviews").select("media").eq("id", reviewId).single();
+  if (review && review.media && Array.isArray(review.media)) {
+    const updatedMedia = review.media.map((m: any) => {
+      if (m.id === mediaId) {
+        const currentLikes = m.likes || 0;
+        return { ...m, likes: currentLikes > 0 ? currentLikes - 1 : 0 };
+      }
+      return m;
+    });
+    await supabase.from("reviews").update({ media: updatedMedia }).eq("id", reviewId);
+    revalidatePath("/", "layout");
+  }
 }

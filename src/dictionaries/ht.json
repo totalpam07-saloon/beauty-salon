@@ -13,7 +13,18 @@
     "anonymous": "Anonim",
     "service": "Sèvis",
     "noDescription": "Pa gen deskripsyon disponib.",
-    "durationAndPrice": "Dire ak Pri"
+    "durationAndPrice": "Dire ak Pri",
+    "details": "Detay",
+    "book": "Rezève",
+    "inquire": "Poze yon kesyon",
+    "collection": "Koleksyon 01",
+    "spaServicesTitle": "Swen ak Tretman",
+    "spaPortfolioTitle": "Reyalizasyon Nou Yo",
+    "spaReviewsTitle": "Temwayaj",
+    "luxeServicesTitle": "Sèvis Nou Yo",
+    "luxePortfolioTitle": "Galri Nou",
+    "luxeReviewsTitle": "Sa Kliyan Nou Yo Di",
+    "editorialTitle": "Editoryal"
   },
   "saas": {
     "heroTitle": "Lanse sit salon ou a an",
@@ -102,6 +113,7 @@
     "navBack": "Tounen sou sit la",
     "navClients": "Kliyan",
     "navStaff": "Estaf",
+    "saved": "Paramèt yo sove ak siksè",
     
     "dashTitle": "Tablo de Bò",
     "dashSub": "Byenveni, jere rezèvasyon ou yo isit la.",

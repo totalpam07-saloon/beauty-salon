@@ -39,6 +39,7 @@ export default async function SettingsPage(props: { params: Promise<{ domain: st
     whatsappNumber: rawSettings.whatsapp_number,
     address: rawSettings.address,
     whatsappVisibility: rawSettings.whatsapp_visibility,
+    templateId: rawSettings.template_id,
   };
   
   const supabase = await createClient();

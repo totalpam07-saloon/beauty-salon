@@ -4,7 +4,7 @@ import { useState, useEffect, useTransition } from "react";
 import { useSalonStore, SalonSettings } from "@/store/salon";
 import { updateSettingsAction, updateTenantDomainAction } from "@/app/actions";
 import { useI18n } from "@/components/i18n-provider";
-import { Check, Settings, Clock, CreditCard, Palette, Crown } from "lucide-react";
+import { Check, Settings, Clock, CreditCard, Palette, Crown, Eye } from "lucide-react";
 
 import { TabGeneral } from "./components/TabGeneral";
 import { TabHours } from "./components/TabHours";
@@ -114,9 +114,19 @@ export default function ClientSettingsManager({ tenantId, domain, settings, cust
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
-      <div>
-        <h1 className="text-3xl font-extrabold text-foreground">{t("admin.navSettings")}</h1>
-        <p className="text-foreground/50 mt-1">{t("admin.setSub")}</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold text-foreground">{t("admin.navSettings")}</h1>
+          <p className="text-foreground/50 mt-1">{t("admin.setSub")}</p>
+        </div>
+        <a 
+          href="/"
+          target="_blank"
+          rel="noopener noreferrer" 
+          className="flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-xl font-bold hover:bg-primary/20 transition-colors shrink-0 self-start sm:self-auto"
+        >
+          <Eye size={18} /> Prévisualiser
+        </a>
       </div>
 
       <div className="flex flex-col md:flex-row gap-8">

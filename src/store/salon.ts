@@ -94,6 +94,7 @@ export interface SalonSettings {
   whatsappNumber?: string;
   address?: string;
   whatsappVisibility?: "floating" | "inline" | "hidden";
+  templateId?: string;
 }
 
 export interface PortfolioPhoto {

@@ -42,6 +42,7 @@ export default async function HomePage(props: { params: Promise<{ domain: string
     whatsappNumber: rawSettings.whatsapp_number,
     address: rawSettings.address,
     whatsappVisibility: rawSettings.whatsapp_visibility,
+    templateId: rawSettings.template_id || 'classic',
   };
 
   const services = rawServices.map((s: any) => ({
@@ -75,8 +76,12 @@ export default async function HomePage(props: { params: Promise<{ domain: string
     appointmentId: r.appointment_id,
     rating: r.rating,
     comment: r.comment,
-    imageUrl: r.image_url,
-    videoUrl: r.video_url,
+    media: r.media || (
+      r.image_url ? [{ url: r.image_url, type: 'image' }] : 
+      r.video_url ? [{ url: r.video_url, type: 'video' }] : 
+      []
+    ),
+    likes_count: r.likes_count || 0,
     isAnonymous: r.is_anonymous,
     createdAt: r.created_at
   }));
@@ -99,6 +104,7 @@ export default async function HomePage(props: { params: Promise<{ domain: string
       settings={settings} 
       portfolio={portfolio} 
       reviews={reviewsWithClientNames}
+      tenantDomain={domain}
     />
   );
 }

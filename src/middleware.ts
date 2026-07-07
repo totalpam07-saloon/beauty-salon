@@ -65,7 +65,8 @@ export default async function middleware(req: NextRequest) {
 
   // ─── 7. Rewrite subdomain requests to the [domain] folder ────────────────
   // e.g. demo.localhost:3000/admin → /demo/admin
-  const rewriteUrl = new URL(`/${subdomain}${path}`, req.url);
+  const rewriteUrl = req.nextUrl.clone();
+  rewriteUrl.pathname = `/${subdomain}${path}`;
   const rewriteResponse = NextResponse.rewrite(rewriteUrl);
 
   // Copy session cookies to the rewrite response
